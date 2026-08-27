@@ -1,19 +1,22 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Navbar from './components/shared/Navbar'
-import Login from './components/auth/Login'
-import Signup from './components/auth/Signup'
-import Home from './components/Home'
+import Login from './pages/auth/Login'
+import Signup from './pages/auth/Signup'
+import ForgotPassword from './pages/auth/ForgotPassword'
+import ResetPassword from './pages/auth/ResetPassword'
+import VerifyEmail from './pages/auth/VerifyEmail'
+import Home from './pages/Home'
 import Jobs from './components/Jobs'
 import Browse from './components/Browse'
 import Profile from './components/Profile'
 import JobDescription from './components/JobDescription'
-import Companies from './components/admin/Companies'
-import CompanyCreate from './components/admin/CompanyCreate'
-import CompanySetup from './components/admin/CompanySetup'
-import AdminJobs from "./components/admin/AdminJobs";
-import PostJob from './components/admin/PostJob'
-import Applicants from './components/admin/Applicants'
-import ProtectedRoute from './components/admin/ProtectedRoute'
+import Companies from './pages/admin/Companies'
+import CompanyCreate from './pages/admin/CompanyCreate'
+import CompanySetup from './pages/admin/CompanySetup'
+import AdminJobs from "./pages/admin/AdminJobs";
+import PostJob from './pages/admin/PostJob'
+import Applicants from './pages/admin/Applicants'
+import ProtectedRoute from './pages/admin/ProtectedRoute'
 
 
 const appRouter = createBrowserRouter([
@@ -28,6 +31,18 @@ const appRouter = createBrowserRouter([
   {
     path: '/signup',
     element: <Signup />
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPassword />
+  },
+  {
+    path: '/reset-password',
+    element: <ResetPassword />
+  },
+  {
+    path: '/verify-email',
+    element: <VerifyEmail />
   },
   {
     path: "/jobs",
