@@ -22,7 +22,7 @@ import STATUS_CODES from '../constants/statusCodes.constant.js';
 
 import { USER_ROLES } from '../constants/roles.constant.js';
 
-export const register = async ({ email, password }) => {
+export const register = async ({ fullname, email, phoneNumber, password, role }) => {
   const existingUser = await authRepository.findUserByEmail(email);
 
   if (existingUser) {
@@ -34,14 +34,13 @@ export const register = async ({ email, password }) => {
   const hashedPassword = await hashPassword(password);
 
   const user = await authRepository.createUser({
+    fullname,
     email,
+    phoneNumber,
     password: hashedPassword,
     emailVerificationOTP: hashedOTP,
     emailVerificationOTPExpires: expiresAt,
-    // Add default applicant role or required fields for your schema
-    fullname: email.split('@')[0], 
-    phoneNumber: 0,
-    role: USER_ROLES.APPLICANT
+    role
   });
 
   try {

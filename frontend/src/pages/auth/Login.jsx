@@ -39,7 +39,7 @@ const Login = () => {
             if (res.data.success) {
                 dispatch(setUser(res.data.user));
                 if (res.data.user?.role === 'recruiter') {
-                    navigate("/admin/companies");
+                    navigate("/admin/dashboard");
                 } else {
                     navigate("/");
                 }
@@ -59,9 +59,13 @@ const Login = () => {
     }
     useEffect(()=>{
         if(user){
-            navigate("/");
+            if (user.role === 'recruiter') {
+                navigate("/admin/dashboard");
+            } else {
+                navigate("/");
+            }
         }
-    },[])
+    },[user, navigate])
     return (
         <div>
             <Navbar />

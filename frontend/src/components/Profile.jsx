@@ -9,6 +9,7 @@ import AppliedJobTable from './AppliedJobTable'
 import UpdateProfileDialog from './UpdateProfileDialog'
 import UpdatePasswordDialog from './UpdatePasswordDialog'
 import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import useGetAppliedJobs from '@/hooks/useGetAppliedJobs'
 
 // const skills = ["Html", "Css", "Javascript", "Reactjs"]
@@ -19,6 +20,13 @@ const Profile = () => {
     const [open, setOpen] = useState(false);
     const [passwordOpen, setPasswordOpen] = useState(false);
     const {user} = useSelector(store=>store.auth);
+    const navigate = useNavigate();
+
+    React.useEffect(() => {
+        if (user?.role === 'recruiter') {
+            navigate("/admin/dashboard");
+        }
+    }, [user, navigate]);
 
     return (
         <div>

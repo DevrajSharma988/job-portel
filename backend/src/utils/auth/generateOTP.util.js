@@ -1,5 +1,5 @@
 export const generateOTP = () => {
-  const otpLength = Number(process.env.OTP_LENGTH);
+  const otpLength = Number(process.env.OTP_LENGTH) || 6;
 
   let otp = '';
 

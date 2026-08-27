@@ -5,7 +5,7 @@ export const accessTokenCookieOptions = {
   secure: isProduction,
   sameSite: isProduction ? 'none' : 'strict',
   path: '/',
-  maxAge: Number(process.env.ACCESS_COOKIE_MAX_AGE),
+  maxAge: Number(process.env.ACCESS_COOKIE_MAX_AGE) || 900000,
 };
 
 export const refreshTokenCookieOptions = {
@@ -13,5 +13,5 @@ export const refreshTokenCookieOptions = {
   secure: isProduction,
   sameSite: isProduction ? 'none' : 'strict',
   path: '/',
-  maxAge: Number(process.env.REFRESH_COOKIE_MAX_AGE),
+  maxAge: Number(process.env.REFRESH_COOKIE_MAX_AGE) || 604800000,
 };

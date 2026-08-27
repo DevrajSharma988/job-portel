@@ -56,7 +56,7 @@ const Signup = () => {
             }
         } catch (error) {
             console.log(error);
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message || "An error occurred during signup");
         } finally{
             dispatch(setLoading(false));
         }
@@ -64,9 +64,13 @@ const Signup = () => {
 
     useEffect(()=>{
         if(user){
-            navigate("/");
+            if (user.role === 'recruiter') {
+                navigate("/admin/dashboard");
+            } else {
+                navigate("/");
+            }
         }
-    },[])
+    },[user, navigate])
     return (
         <div>
             <Navbar />
@@ -158,7 +162,7 @@ const Signup = () => {
                         </div>
                     </div>
                     {
-                        loading ? <Button className="w-full my-4"> <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </Button> : <Button type="submit" className="w-full my-4">Signup</Button>
+                        loading ? <Button disabled className="w-full my-4"> <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </Button> : <Button type="submit" className="w-full my-4">Signup</Button>
                     }
                     <span className='text-sm'>Already have an account? <Link to="/login" className='text-blue-600'>Login</Link></span>
                 </form>

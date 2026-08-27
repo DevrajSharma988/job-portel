@@ -53,7 +53,7 @@ const PostJob = () => {
                 navigate("/admin/jobs");
             }
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message || "An error occurred");
         } finally{
             setLoading(false);
         }
@@ -126,9 +126,9 @@ const PostJob = () => {
                             />
                         </div>
                         <div>
-                            <Label>Experience Level</Label>
+                            <Label>Experience Level (in years)</Label>
                             <Input
-                                type="text"
+                                type="number"
                                 name="experience"
                                 value={input.experience}
                                 onChange={changeEventHandler}

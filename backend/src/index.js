@@ -54,7 +54,7 @@ app.use((err, req, res, next) => {
 
 
 app.listen(PORT, async () => {
-    connectDB();
+    await connectDB();
     await connectRedis();
     console.log(`Server running at port ${PORT}`);
 })

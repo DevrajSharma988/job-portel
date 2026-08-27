@@ -5,14 +5,18 @@ import validatePassword from '../utils/auth/validatePassword.util.js';
 import STATUS_CODES from '../constants/statusCodes.constant.js';
 
 export const validateRegister = (data) => {
-  const { email, password } = data;
+  const { fullname, email, phoneNumber, password, role } = data;
 
-  if (!email || !password) {
-    throw new ApiError(STATUS_CODES.BAD_REQUEST, 'Email and Password are required.');
+  if (!fullname || !email || !phoneNumber || !password || !role) {
+    throw new ApiError(STATUS_CODES.BAD_REQUEST, 'All fields are required.');
   }
 
   if (!validator.isEmail(email)) {
     throw new ApiError(STATUS_CODES.BAD_REQUEST, 'Invalid email.');
+  }
+
+  if (!['applicant', 'recruiter'].includes(role)) {
+    throw new ApiError(STATUS_CODES.BAD_REQUEST, 'Invalid role.');
   }
 
   if (

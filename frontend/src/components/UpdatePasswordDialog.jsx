@@ -7,8 +7,13 @@ import { Loader2, Eye, EyeOff } from 'lucide-react'
 import axios from 'axios'
 import { USER_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { setUser } from '@/redux/authSlice'
 
 const UpdatePasswordDialog = ({ open, setOpen }) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [input, setInput] = useState({
         oldPassword: "",
@@ -35,6 +40,9 @@ const UpdatePasswordDialog = ({ open, setOpen }) => {
                 toast.success(res.data.message);
                 setOpen(false);
                 setInput({ oldPassword: "", newPassword: "" });
+                // Force login by clearing user state and redirecting
+                dispatch(setUser(null));
+                navigate("/login");
             }
         } catch (error) {
             console.log(error);

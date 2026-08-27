@@ -40,9 +40,11 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         formData.append("email", input.email);
         formData.append("phoneNumber", input.phoneNumber);
         formData.append("bio", input.bio);
-        formData.append("skills", input.skills);
-        if (input.file) {
-            formData.append("file", input.file);
+        if (user?.role === 'applicant') {
+            formData.append("skills", input.skills);
+            if (input.file) {
+                formData.append("file", input.file);
+            }
         }
         try {
             setLoading(true);
@@ -119,27 +121,31 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                     className="col-span-3"
                                 />
                             </div>
-                            <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor="skills" className="text-right">Skills</Label>
-                                <Input
-                                    id="skills"
-                                    name="skills"
-                                    value={input.skills}
-                                    onChange={changeEventHandler}
-                                    className="col-span-3"
-                                />
-                            </div>
-                            <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor="file" className="text-right">Resume</Label>
-                                <Input
-                                    id="file"
-                                    name="file"
-                                    type="file"
-                                    accept="application/pdf"
-                                    onChange={fileChangeHandler}
-                                    className="col-span-3"
-                                />
-                            </div>
+                            {user?.role === 'applicant' && (
+                                <>
+                                    <div className='grid grid-cols-4 items-center gap-4'>
+                                        <Label htmlFor="skills" className="text-right">Skills</Label>
+                                        <Input
+                                            id="skills"
+                                            name="skills"
+                                            value={input.skills}
+                                            onChange={changeEventHandler}
+                                            className="col-span-3"
+                                        />
+                                    </div>
+                                    <div className='grid grid-cols-4 items-center gap-4'>
+                                        <Label htmlFor="file" className="text-right">Resume</Label>
+                                        <Input
+                                            id="file"
+                                            name="file"
+                                            type="file"
+                                            accept="application/pdf"
+                                            onChange={fileChangeHandler}
+                                            className="col-span-3"
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
                         <DialogFooter>
                             {

@@ -7,8 +7,8 @@ import { getRecruiterJobs, getAllJobs, getJobById, postJob } from "../controller
 const router = express.Router();
 
 router.route("/post").post(authMiddleware, recruiterMiddleware, postJob);
-router.route("/get").get(authMiddleware, applicantMiddleware, getAllJobs);
+router.route("/get").get(getAllJobs);
 router.route("/getrecruiterjobs").get(authMiddleware, recruiterMiddleware, getRecruiterJobs);
-router.route("/get/:id").get(authMiddleware, applicantMiddleware, getJobById);
+router.route("/get/:id").get(getJobById);
 
 export default router;

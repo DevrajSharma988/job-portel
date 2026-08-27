@@ -11,10 +11,15 @@ export const register = asyncHandler(async (req, res) => {
 
   const result = await authService.register(req.body);
 
+  let message = 'Registration successful. Please check your email for the verification OTP.';
+  if (result.role === 'recruiter') {
+    message += ' Once verified and logged in, please register your company to post job openings.';
+  }
+
   new ApiResponse(
     res,
     STATUS_CODES.CREATED,
-    'Registration successful. Please check your email for the verification OTP.',
+    message,
     result
   );
 });
@@ -24,7 +29,12 @@ export const verifyOTP = asyncHandler(async (req, res) => {
 
   const result = await authService.verifyOTP(req.body);
 
-  sendTokenResponse(res, STATUS_CODES.OK, 'Email verified successfully. You are now logged in.', result);
+  let message = 'Email verified successfully. You are now logged in.';
+  if (result.user.role === 'recruiter') {
+    message += ' Please register your company to post job openings.';
+  }
+
+  sendTokenResponse(res, STATUS_CODES.OK, message, result);
 });
 
 export const resendOTP = asyncHandler(async (req, res) => {
@@ -40,7 +50,12 @@ export const login = asyncHandler(async (req, res) => {
 
   const result = await authService.login(req.body);
 
-  sendTokenResponse(res, STATUS_CODES.OK, 'Logged in successfully.', result);
+  let message = 'Logged in successfully.';
+  if (result.user.role === 'recruiter') {
+    message += ' Please ensure your company is registered to post job openings.';
+  }
+
+  sendTokenResponse(res, STATUS_CODES.OK, message, result);
 });
 
 export const refresh = asyncHandler(async (req, res) => {
