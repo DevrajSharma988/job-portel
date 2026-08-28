@@ -98,27 +98,99 @@ import { setLoading, setUser } from './redux/authSlice'
 import axios from 'axios'
 import { USER_API_END_POINT } from './utils/constant'
 import store from './redux/store'
+import { toast } from 'sonner'
 
-// Setup Axios Interceptors to handle token expiration silently
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
+// Setup Axios Interceptors to handle token expiration silently and standard errors
 axios.interceptors.response.use(
   (response) => response,
-  async (error) => {
+  (error) => {
+    // 1. Network Errors (Backend offline, timeout, no internet)
+    if (!error.response) {
+      error.response = { data: { message: "Network error. Please check your connection or try again later." } };
+      toast.error(error.response.data.message);
+      return Promise.reject(error);
+    }
+
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      if (originalRequest.url.includes('/login') || originalRequest.url.includes('/refresh')) {
-        return Promise.reject(error);
+    const status = error.response?.status;
+    const isAuthRoute = originalRequest.url.includes('/login') || originalRequest.url.includes('/register') || originalRequest.url.includes('/refresh');
+
+    // 2. Handle Token Expiration (401)
+    if (status === 401 && !originalRequest._retry && !isAuthRoute) {
+      if (isRefreshing) {
+        return new Promise(function(resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        }).then(token => {
+          return axios(originalRequest);
+        }).catch(err => {
+          return Promise.reject(err);
+        });
       }
+
       originalRequest._retry = true;
-      try {
-        await axios.post(`${USER_API_END_POINT}/refresh-token`, {}, { withCredentials: true });
-        return axios(originalRequest);
-      } catch (refreshError) {
-        // If refresh fails, tokens are dead. Clear state and kick to login.
-        store.dispatch(setUser(null));
-        window.location.href = "/login";
-        return Promise.reject(refreshError);
+      isRefreshing = true;
+
+      return new Promise(function (resolve, reject) {
+        axios.post(`${USER_API_END_POINT}/refresh-token`, {}, { withCredentials: true })
+          .then(({ data }) => {
+            processQueue(null, data.token);
+            resolve(axios(originalRequest));
+          })
+          .catch((err) => {
+            processQueue(err, null);
+            store.dispatch(setUser(null));
+            toast.error("Your session has expired. Please log in again.");
+            window.location.href = "/login";
+            reject(err);
+          })
+          .finally(() => {
+            isRefreshing = false;
+          });
+      });
+    }
+
+    // 3. Global HTTP Status Code Mappings
+    // Do not override user-friendly backend messages for 400 bad requests.
+    if (!isAuthRoute || status >= 500) {
+      switch (status) {
+        case 401:
+          if (!isAuthRoute) error.response.data.message = "Your session has expired. Please log in again.";
+          break;
+        case 403:
+          error.response.data.message = "You are not authorized to perform this action.";
+          break;
+        case 404:
+          error.response.data.message = "Requested resource was not found.";
+          break;
+        case 409:
+          error.response.data.message = error.response.data.message || "Conflict with existing data. An account with this email might already exist.";
+          break;
+        case 422:
+          error.response.data.message = "Please check the entered information.";
+          break;
+        case 500:
+        case 502:
+        case 503:
+        case 504:
+          error.response.data.message = "Something went wrong. Please try again later.";
+          break;
       }
     }
+
     return Promise.reject(error);
   }
 );

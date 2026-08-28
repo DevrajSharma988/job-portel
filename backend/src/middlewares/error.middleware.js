@@ -1,4 +1,4 @@
-import STATUS_CODES from '../constants/statusCodes';
+import STATUS_CODES from '../constants/statusCodes.constant.js';
 
 const errorMiddleware = (err, req, res, next) => {
   if (err.code === 11000) {

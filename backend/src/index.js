@@ -20,7 +20,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 const corsOptions = {
-    origin: 'https://job-portel-1-42el.onrender.com',
+    origin: [
+        'http://localhost:5173',
+        'https://job-portel-1-42el.onrender.com'
+    ],
     credentials: true
 }
 
@@ -36,11 +39,16 @@ app.use("/api/v1/jobs", jobRoute);
 app.use("/api/v1/applications", applicationRoute);
 
 
+import errorMiddleware from "./middlewares/error.middleware.js";
+
 app.use(express.static(path.join(_dirname, "./frontend/dist")));
 
 app.get('*', (_, res) => {
     res.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"));
 });
+
+// Global error handler MUST be the last middleware
+app.use(errorMiddleware);
 
 
 app.listen(PORT, async () => {

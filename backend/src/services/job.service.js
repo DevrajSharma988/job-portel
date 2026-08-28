@@ -1,10 +1,19 @@
 import ApiError from "../utils/ApiError.util.js";
 import STATUS_CODES from "../constants/statusCodes.constant.js";
 import * as jobRepository from "../repositories/job.repository.js";
+import * as companyRepository from "../repositories/company.repository.js";
 
 export const createJob = async (jobData, userId) => {
   const { title, description, requirements, salary, location, jobType, experience, position, companyId } = jobData;
   
+  const company = await companyRepository.findCompanyById(companyId);
+  if (!company) {
+    throw new ApiError(STATUS_CODES.NOT_FOUND, "Company not found.");
+  }
+  if (company.userId.toString() !== userId.toString()) {
+    throw new ApiError(STATUS_CODES.FORBIDDEN, "You do not have permission to post a job for this company.");
+  }
+
   const job = await jobRepository.createJob({
     title,
     description,
@@ -32,10 +41,7 @@ export const getAllJobs = async (keyword) => {
     : {};
 
   const jobs = await jobRepository.findJobsByQuery(query);
-  if (!jobs || jobs.length === 0) {
-    throw new ApiError(STATUS_CODES.NOT_FOUND, "Jobs not found.");
-  }
-  return jobs;
+  return jobs || [];
 };
 
 export const getJobById = async (jobId) => {
@@ -48,8 +54,5 @@ export const getJobById = async (jobId) => {
 
 export const getAdminJobs = async (adminId) => {
   const jobs = await jobRepository.findJobsByCreator(adminId);
-  if (!jobs || jobs.length === 0) {
-    throw new ApiError(STATUS_CODES.NOT_FOUND, "Jobs not found.");
-  }
-  return jobs;
+  return jobs || [];
 };

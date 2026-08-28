@@ -1,20 +1,18 @@
 import express from "express";
 import authMiddleware from "../middlewares/auth.middleware.js";
 import { applyJob, getApplicants, getAppliedJobs, updateStatus } from "../controllers/application.controller.js";
+import validate from "../middlewares/validate.middleware.js";
+import validateObjectId from "../middlewares/validateObjectId.middleware.js";
+import * as applicationValidator from "../validators/application.validator.js";
 
 const router = express.Router();
 
-// 1. Get all applications for current user
-router.route("/").get(authMiddleware, getAppliedJobs);
+router.get("/get", authMiddleware, getAppliedJobs);
 
-// 2. Apply for a job (Requires POST, creates application)
-// 3. Get all applications for a specific job (Admin view)
-router.route("/job/:id")
-  .post(authMiddleware, applyJob)
-  .get(authMiddleware, getApplicants);
+router.get("/apply/:id", authMiddleware, validateObjectId('id'), validate(applicationValidator.validateApplyJob, 'params'), applyJob);
 
-// 4. Update the status of a specific application
-router.route("/:id/status").patch(authMiddleware, updateStatus);
+router.get("/:id/applicants", authMiddleware, validateObjectId('id'), getApplicants);
 
+router.post("/status/:id/update", authMiddleware, validateObjectId('id'), validate(applicationValidator.validateUpdateStatus), updateStatus);
 
 export default router;

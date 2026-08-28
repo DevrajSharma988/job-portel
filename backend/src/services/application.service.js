@@ -24,10 +24,7 @@ export const applyJob = async (userId, jobId) => {
 
 export const getAppliedJobs = async (userId) => {
   const application = await applicationRepository.findApplicationsByApplicant(userId);
-  if (!application || application.length === 0) {
-    throw new ApiError(STATUS_CODES.NOT_FOUND, "No Applications");
-  }
-  return application;
+  return application || [];
 };
 
 export const getApplicants = async (jobId) => {

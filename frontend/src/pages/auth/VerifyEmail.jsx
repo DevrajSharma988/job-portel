@@ -8,6 +8,8 @@ import axios from 'axios'
 import { USER_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
+import { useDispatch } from 'react-redux'
+import { setUser } from '@/redux/authSlice'
 
 const VerifyEmail = () => {
     const location = useLocation();
@@ -19,6 +21,8 @@ const VerifyEmail = () => {
     const [loading, setLoading] = useState(false);
     const [resendLoading, setResendLoading] = useState(false);
 
+    const dispatch = useDispatch();
+
     const submitHandler = async (e) => {
         e.preventDefault();
         try {
@@ -28,9 +32,10 @@ const VerifyEmail = () => {
                 withCredentials: true,
             });
             if (res.data.success) {
+                dispatch(setUser(res.data.user));
                 toast.success(res.data.message);
                 if (res.data.user?.role === 'recruiter') {
-                    navigate("/admin/companies");
+                    navigate("/admin/dashboard");
                 } else {
                     navigate("/");
                 }

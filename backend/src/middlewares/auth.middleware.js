@@ -23,6 +23,7 @@ export const authMiddleware = async (req, res, next) => {
     }
 
     req.user = user;
+    req.id = user._id;
 
     next();
   } catch (error) {

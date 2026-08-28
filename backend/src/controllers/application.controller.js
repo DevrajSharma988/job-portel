@@ -5,8 +5,6 @@ import * as applicationService from "../services/application.service.js";
 import STATUS_CODES from "../constants/statusCodes.constant.js";
 
 export const applyJob = asyncHandler(async (req, res) => {
-    applicationValidator.validateApplyJob(req.params);
-
     await applicationService.applyJob(req.id, req.params.id);
 
     return new ApiResponse(res, STATUS_CODES.CREATED, "Job applied successfully.", undefined);
@@ -25,8 +23,6 @@ export const getApplicants = asyncHandler(async (req, res) => {
 });
 
 export const updateStatus = asyncHandler(async (req, res) => {
-    applicationValidator.validateUpdateStatus(req.body);
-
     await applicationService.updateStatus(req.params.id, req.body.status);
 
     return new ApiResponse(res, STATUS_CODES.OK, "Status updated successfully.", undefined);

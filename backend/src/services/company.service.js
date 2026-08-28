@@ -16,21 +16,29 @@ export const registerCompany = async ({ companyName, userId }) => {
 
 export const getCompanies = async (userId) => {
   const companies = await companyRepository.findCompaniesByUserId(userId);
-  if (!companies || companies.length === 0) {
-    throw new ApiError(STATUS_CODES.NOT_FOUND, "Companies not found.");
-  }
-  return companies;
+  return companies || [];
 };
 
-export const getCompanyById = async (companyId) => {
+export const getCompanyById = async (companyId, userId) => {
   const company = await companyRepository.findCompanyById(companyId);
   if (!company) {
     throw new ApiError(STATUS_CODES.NOT_FOUND, "Company not found.");
   }
+  if (company.userId.toString() !== userId.toString()) {
+    throw new ApiError(STATUS_CODES.FORBIDDEN, "You do not have permission to access this company.");
+  }
   return company;
 };
 
-export const updateCompany = async (companyId, updateData, file) => {
+export const updateCompany = async (companyId, updateData, file, userId) => {
+  const companyToUpdate = await companyRepository.findCompanyById(companyId);
+  if (!companyToUpdate) {
+    throw new ApiError(STATUS_CODES.NOT_FOUND, "Company not found.");
+  }
+  if (companyToUpdate.userId.toString() !== userId.toString()) {
+    throw new ApiError(STATUS_CODES.FORBIDDEN, "You do not have permission to update this company.");
+  }
+
   let logo;
   if (file) {
     const fileUri = getDataUri(file);
@@ -42,10 +50,6 @@ export const updateCompany = async (companyId, updateData, file) => {
   if (logo) dataToUpdate.logo = logo;
 
   const company = await companyRepository.updateCompanyById(companyId, dataToUpdate);
-
-  if (!company) {
-    throw new ApiError(STATUS_CODES.NOT_FOUND, "Company not found.");
-  }
 
   return company;
 };

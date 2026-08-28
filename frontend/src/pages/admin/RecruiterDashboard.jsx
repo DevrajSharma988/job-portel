@@ -14,7 +14,7 @@ import { setUser } from '@/redux/authSlice';
 import { toast } from 'sonner';
 
 const RecruiterDashboard = () => {
-    useGetAllCompanies(); // Fetches companies and populates redux
+    const { loading } = useGetAllCompanies(); // Fetches companies and populates redux
     const { user } = useSelector(store => store.auth);
     const { companies } = useSelector(store => store.company);
     const dispatch = useDispatch();
@@ -22,7 +22,7 @@ const RecruiterDashboard = () => {
     const [openProfile, setOpenProfile] = useState(false);
     const [openPassword, setOpenPassword] = useState(false);
 
-    const hasCompany = companies.length > 0;
+    const hasCompany = companies && companies.length > 0;
 
     const logoutHandler = async () => {
         try {
@@ -38,6 +38,17 @@ const RecruiterDashboard = () => {
         }
     };
 
+    if (loading) {
+        return (
+            <div>
+                <Navbar />
+                <div className='max-w-4xl mx-auto my-5 flex justify-center items-center min-h-[50vh]'>
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div>
             <Navbar />
@@ -46,7 +57,7 @@ const RecruiterDashboard = () => {
                     <div className='bg-blue-50 border border-blue-200 text-blue-800 rounded-xl p-8 mb-8 text-center'>
                         <div className="text-6xl mb-4">🏢</div>
                         <h2 className='text-2xl font-bold mb-2'>Welcome!</h2>
-                        <p className='text-lg mb-6'>Before posting your first job, you need to register your company.</p>
+                        <p className='text-lg mb-6'>You haven't registered any company yet. Register your first company to start posting jobs.</p>
                         <Button onClick={() => navigate("/admin/companies/create")} className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
                             Register Company
                         </Button>
@@ -83,22 +94,22 @@ const RecruiterDashboard = () => {
                 </div>
 
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-                    <div className={`border rounded-2xl p-6 ${hasCompany ? 'bg-white' : 'bg-gray-50 opacity-60'}`}>
+                    <div className={`border rounded-2xl p-6 ${hasCompany ? 'bg-white' : 'bg-gray-50'}`}>
                         <div className='flex items-center justify-between mb-4'>
-                            <h3 className='font-bold text-lg'>Companies</h3>
+                            <h3 className='font-bold text-lg'>My Companies</h3>
                             <Building2 className="text-gray-400" />
                         </div>
-                        <p className='text-3xl font-bold mb-4'>{companies.length}</p>
+                        <p className='text-3xl font-bold mb-4'>{companies ? companies.length : 0}</p>
                         <Button 
                             className="w-full" 
                             variant="outline" 
-                            onClick={() => navigate("/admin/companies")}
+                            onClick={() => hasCompany ? navigate("/admin/companies") : navigate("/admin/companies/create")}
                         >
-                            Manage Companies
+                            {hasCompany ? 'Manage Companies' : 'Register Company'}
                         </Button>
                     </div>
 
-                    <div className={`border rounded-2xl p-6 ${hasCompany ? 'bg-white' : 'bg-gray-50 opacity-60'}`}>
+                    <div className={`border rounded-2xl p-6 ${hasCompany ? 'bg-white' : 'bg-gray-50'}`}>
                         <div className='flex items-center justify-between mb-4'>
                             <h3 className='font-bold text-lg'>Jobs</h3>
                             <Briefcase className="text-gray-400" />
@@ -106,25 +117,25 @@ const RecruiterDashboard = () => {
                         <p className='text-sm text-gray-500 mb-4'>Post and manage job listings</p>
                         <Button 
                             className="w-full" 
-                            disabled={!hasCompany}
-                            onClick={() => navigate("/admin/jobs")}
+                            variant={hasCompany ? 'default' : 'outline'}
+                            onClick={() => hasCompany ? navigate("/admin/jobs") : navigate("/admin/companies/create")}
                         >
-                            Manage Jobs
+                            {hasCompany ? 'Manage Jobs' : 'Register Company'}
                         </Button>
                     </div>
 
-                    <div className={`border rounded-2xl p-6 ${hasCompany ? 'bg-white' : 'bg-gray-50 opacity-60'}`}>
+                    <div className={`border rounded-2xl p-6 ${hasCompany ? 'bg-white' : 'bg-gray-50'}`}>
                         <div className='flex items-center justify-between mb-4'>
                             <h3 className='font-bold text-lg'>Quick Actions</h3>
                             <Users className="text-gray-400" />
                         </div>
                         <p className='text-sm text-gray-500 mb-4'>Ready to hire?</p>
                         <Button 
-                            className="w-full bg-[#6A38C2] hover:bg-[#5b30a6]" 
-                            disabled={!hasCompany}
-                            onClick={() => navigate("/admin/jobs/create")}
+                            className={hasCompany ? "w-full bg-[#6A38C2] hover:bg-[#5b30a6]" : "w-full"}
+                            variant={hasCompany ? 'default' : 'outline'}
+                            onClick={() => hasCompany ? navigate("/admin/jobs/create") : navigate("/admin/companies/create")}
                         >
-                            Post a Job
+                            {hasCompany ? 'Post a Job' : 'Register Company'}
                         </Button>
                     </div>
                 </div>

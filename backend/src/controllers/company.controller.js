@@ -5,8 +5,6 @@ import * as companyService from "../services/company.service.js";
 import STATUS_CODES from "../constants/statusCodes.constant.js";
 
 export const registerCompany = asyncHandler(async (req, res) => {
-    companyValidator.validateRegisterCompany(req.body);
-
     const company = await companyService.registerCompany({
         companyName: req.body.companyName,
         userId: req.id,
@@ -22,7 +20,7 @@ export const getCompany = asyncHandler(async (req, res) => {
 });
 
 export const getCompanyById = asyncHandler(async (req, res) => {
-    const company = await companyService.getCompanyById(req.params.id);
+    const company = await companyService.getCompanyById(req.params.id, req.id);
 
     return new ApiResponse(res, STATUS_CODES.OK, undefined, { company });
 });
@@ -30,7 +28,7 @@ export const getCompanyById = asyncHandler(async (req, res) => {
 export const updateCompany = asyncHandler(async (req, res) => {
     const { name, description, website, location } = req.body;
 
-    await companyService.updateCompany(req.params.id, { name, description, website, location }, req.file);
+    await companyService.updateCompany(req.params.id, { name, description, website, location }, req.file, req.id);
 
     return new ApiResponse(res, STATUS_CODES.OK, "Company information updated.", undefined);
 });

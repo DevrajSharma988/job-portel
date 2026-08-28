@@ -7,7 +7,6 @@ import asyncHandler from '../utils/asyncHandler.util.js';
 import STATUS_CODES from '../constants/statusCodes.constant.js';
 
 export const register = asyncHandler(async (req, res) => {
-  authValidator.validateRegister(req.body);
 
   const result = await authService.register(req.body);
 
@@ -25,7 +24,6 @@ export const register = asyncHandler(async (req, res) => {
 });
 
 export const verifyOTP = asyncHandler(async (req, res) => {
-  authValidator.validateVerifyOTP(req.body);
 
   const result = await authService.verifyOTP(req.body);
 
@@ -38,7 +36,6 @@ export const verifyOTP = asyncHandler(async (req, res) => {
 });
 
 export const resendOTP = asyncHandler(async (req, res) => {
-  authValidator.validateResendOTP(req.body);
 
   const result = await authService.resendOTP(req.body);
 
@@ -46,7 +43,6 @@ export const resendOTP = asyncHandler(async (req, res) => {
 });
 
 export const login = asyncHandler(async (req, res) => {
-  authValidator.validateLogin(req.body);
 
   const result = await authService.login(req.body);
 
@@ -83,26 +79,22 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
 });
 
 export const forgotPassword = asyncHandler(async (req, res) => {
-  authValidator.validateForgotPassword(req.body);
   const result = await authService.forgotPassword(req.body);
   new ApiResponse(res, STATUS_CODES.OK, 'Password reset OTP sent to your email.', result);
 });
 
 export const verifyForgotPasswordOTP = asyncHandler(async (req, res) => {
-  authValidator.validateVerifyForgotPasswordOTP(req.body);
   const result = await authService.verifyForgotPasswordOTP(req.body);
   new ApiResponse(res, STATUS_CODES.OK, 'OTP verified successfully.', result);
 });
 
 export const resetPassword = asyncHandler(async (req, res) => {
-  authValidator.validateResetPassword(req.body);
   await authService.resetPassword(req.body);
   clearAuthCookies(res);
   new ApiResponse(res, STATUS_CODES.OK, 'Password reset successfully. Please login with your new password.');
 });
 
 export const changePassword = asyncHandler(async (req, res) => {
-  authValidator.validateChangePassword(req.body);
   await authService.changePassword({
     userId: req.user._id,
     ...req.body,
