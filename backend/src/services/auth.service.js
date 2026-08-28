@@ -82,7 +82,11 @@ export const updateProfile = async ({ userId, fullname, email, phoneNumber, bio,
   if (!user.profile) user.profile = {};
   if (bio) user.profile.bio = bio;
   if (skills) {
-    user.profile.skills = typeof skills === 'string' ? skills.split(',') : skills;
+    try {
+      user.profile.skills = JSON.parse(skills);
+    } catch (error) {
+      user.profile.skills = typeof skills === 'string' ? skills.split(',') : skills;
+    }
   }
 
   if (file) {
@@ -153,7 +157,10 @@ export const verifyOTP = async ({ email, otp }) => {
   return {
     user: {
       _id: updatedUser._id,
+      fullname: updatedUser.fullname,
       email: updatedUser.email,
+      phoneNumber: updatedUser.phoneNumber,
+      profile: updatedUser.profile,
       role: updatedUser.role,
       isVerified: updatedUser.isVerified,
     },

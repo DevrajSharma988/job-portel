@@ -53,7 +53,7 @@ const UpdatePasswordDialog = ({ open, setOpen }) => {
     }
 
     return (
-        <Dialog open={open}>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="sm:max-w-[425px]" onInteractOutside={() => setOpen(false)} onEscapeKeyDown={() => setOpen(false)} showCloseButton={true} setOpen={setOpen}>
                 <DialogHeader>
                     <DialogTitle>Change Password</DialogTitle>

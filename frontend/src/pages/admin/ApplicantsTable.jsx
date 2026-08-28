@@ -6,8 +6,9 @@ import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import { APPLICATION_API_END_POINT } from '@/utils/constant';
 import axios from 'axios';
+import { Badge } from '../../components/ui/badge';
 
-const shortlistingStatus = ["Accepted", "Rejected"];
+const shortlistingStatus = ["Accept", "Reject"];
 
 const ApplicantsTable = () => {
     const { applicants } = useSelector(store => store.application);
@@ -37,6 +38,7 @@ const ApplicantsTable = () => {
                         <TableHead>Contact</TableHead>
                         <TableHead>Resume</TableHead>
                         <TableHead>Date</TableHead>
+                        <TableHead>Status</TableHead>
                         <TableHead className="text-right">Action</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -44,15 +46,20 @@ const ApplicantsTable = () => {
                     {
                         applicants && applicants?.applications?.map((item) => (
                             <tr key={item._id}>
-                                <TableCell>{item?.applicant?.fullname}</TableCell>
-                                <TableCell>{item?.applicant?.email}</TableCell>
-                                <TableCell>{item?.applicant?.phoneNumber}</TableCell>
+                                <TableCell>{item?.applicant?.fullname || "Unknown"}</TableCell>
+                                <TableCell>{item?.applicant?.email || "N/A"}</TableCell>
+                                <TableCell>{item?.applicant?.phoneNumber || "N/A"}</TableCell>
                                 <TableCell >
                                     {
-                                        item.applicant?.profile?.resume ? <a className="text-blue-600 cursor-pointer" href={item?.applicant?.profile?.resume} target="_blank" rel="noopener noreferrer">{item?.applicant?.profile?.resumeOriginalName}</a> : <span>NA</span>
+                                        item?.applicant?.profile?.resume ? <a className="text-blue-600 cursor-pointer" href={item?.applicant?.profile?.resume} target="_blank" rel="noopener noreferrer">{item?.applicant?.profile?.resumeOriginalName}</a> : <span>NA</span>
                                     }
                                 </TableCell>
-                                <TableCell>{item?.applicant.createdAt.split("T")[0]}</TableCell>
+                                <TableCell>{item?.applicant?.createdAt?.split("T")[0] || item?.createdAt?.split("T")[0]}</TableCell>
+                                <TableCell>
+                                    <Badge className={`${item?.status === "rejected" ? 'bg-red-400' : item?.status === 'pending' ? 'bg-gray-400' : 'bg-green-400'}`}>
+                                        {item?.status?.toUpperCase() || 'UNKNOWN'}
+                                    </Badge>
+                                </TableCell>
                                 <TableCell className="float-right cursor-pointer">
                                     <Popover>
                                         <PopoverTrigger>
@@ -62,7 +69,7 @@ const ApplicantsTable = () => {
                                             {
                                                 shortlistingStatus.map((status, index) => {
                                                     return (
-                                                        <div onClick={() => statusHandler(status, item?._id)} key={index} className='flex w-fit items-center my-2 cursor-pointer'>
+                                                        <div onClick={() => statusHandler(status === 'Accept' ? 'accepted' : 'rejected', item?._id)} key={index} className='flex w-fit items-center my-2 cursor-pointer'>
                                                             <span>{status}</span>
                                                         </div>
                                                     )
