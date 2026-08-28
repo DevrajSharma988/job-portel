@@ -7,8 +7,12 @@ import asyncHandler from '../utils/asyncHandler.util.js';
 import STATUS_CODES from '../constants/statusCodes.constant.js';
 
 export const register = asyncHandler(async (req, res) => {
+  const payload = { ...req.body };
+  if (req.file) {
+    payload.file = req.file;
+  }
 
-  const result = await authService.register(req.body);
+  const result = await authService.register(payload);
 
   let message = 'Registration successful. Please check your email for the verification OTP.';
   if (result.role === 'recruiter') {
@@ -21,6 +25,16 @@ export const register = asyncHandler(async (req, res) => {
     message,
     result
   );
+});
+
+export const updateProfile = asyncHandler(async (req, res) => {
+  const payload = { ...req.body, userId: req.id };
+  if (req.file) {
+    payload.file = req.file;
+  }
+  const result = await authService.updateProfile(payload);
+
+  new ApiResponse(res, STATUS_CODES.OK, 'Profile updated successfully.', { user: result });
 });
 
 export const verifyOTP = asyncHandler(async (req, res) => {

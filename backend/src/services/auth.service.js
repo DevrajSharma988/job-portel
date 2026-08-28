@@ -1,4 +1,6 @@
 import bcrypt from 'bcryptjs';
+import cloudinary from '../config/cloudinary.config.js';
+import getDataUri from '../utils/datauri.util.js';
 
 import * as authRepository from '../repositories/auth.repository.js';
 
@@ -22,11 +24,18 @@ import STATUS_CODES from '../constants/statusCodes.constant.js';
 
 import { USER_ROLES } from '../constants/roles.constant.js';
 
-export const register = async ({ fullname, email, phoneNumber, password, role }) => {
+export const register = async ({ fullname, email, phoneNumber, password, role, file }) => {
   const existingUser = await authRepository.findUserByEmail(email);
 
   if (existingUser) {
     throw new ApiError(STATUS_CODES.CONFLICT, 'User already exists.');
+  }
+
+  let profilePhoto = "";
+  if (file) {
+    const fileUri = getDataUri(file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    profilePhoto = cloudResponse.secure_url;
   }
 
   const { otp, hashedOTP, expiresAt } = await createOTP();
@@ -40,7 +49,8 @@ export const register = async ({ fullname, email, phoneNumber, password, role })
     password: hashedPassword,
     emailVerificationOTP: hashedOTP,
     emailVerificationOTPExpires: expiresAt,
-    role
+    role,
+    profile: { profilePhoto }
   });
 
   try {
@@ -56,6 +66,54 @@ export const register = async ({ fullname, email, phoneNumber, password, role })
 
   return {
     email: user.email,
+  };
+};
+
+export const updateProfile = async ({ userId, fullname, email, phoneNumber, bio, skills, file }) => {
+  const user = await authRepository.findUserById(userId);
+  if (!user) {
+    throw new ApiError(STATUS_CODES.NOT_FOUND, 'User not found.');
+  }
+
+  if (fullname) user.fullname = fullname;
+  if (email) user.email = email;
+  if (phoneNumber) user.phoneNumber = phoneNumber;
+  
+  if (!user.profile) user.profile = {};
+  if (bio) user.profile.bio = bio;
+  if (skills) {
+    user.profile.skills = typeof skills === 'string' ? skills.split(',') : skills;
+  }
+
+  if (file) {
+    const fileUri = getDataUri(file);
+    let cloudResponse;
+    
+    if (file.mimetype === 'application/pdf') {
+      // Resume
+      cloudResponse = await cloudinary.uploader.upload(fileUri.content, { resource_type: 'raw' });
+      if (cloudResponse) {
+        user.profile.resume = cloudResponse.secure_url;
+        user.profile.resumeOriginalName = file.originalname;
+      }
+    } else {
+      // Profile Photo
+      cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+      if (cloudResponse) {
+        user.profile.profilePhoto = cloudResponse.secure_url;
+      }
+    }
+  }
+
+  await user.save();
+
+  return {
+    _id: user._id,
+    fullname: user.fullname,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    role: user.role,
+    profile: user.profile
   };
 };
 

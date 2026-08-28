@@ -35,19 +35,21 @@ const Signup = () => {
     }
     const submitHandler = async (e) => {
         e.preventDefault();
-        // Temporarily disabled FormData to test JSON auth flow
-        const payload = {
-            fullname: input.fullname,
-            email: input.email,
-            phoneNumber: input.phoneNumber,
-            password: input.password,
-            role: input.role
-        };
+        
+        const formData = new FormData();
+        formData.append("fullname", input.fullname);
+        formData.append("email", input.email);
+        formData.append("phoneNumber", input.phoneNumber);
+        formData.append("password", input.password);
+        formData.append("role", input.role);
+        if (input.file) {
+            formData.append("file", input.file);
+        }
 
         try {
             dispatch(setLoading(true));
-            const res = await axios.post(`${USER_API_END_POINT}/register`, payload, {
-                headers: { 'Content-Type': "application/json" },
+            const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
+                headers: { 'Content-Type': "multipart/form-data" },
                 withCredentials: true,
             });
             if (res.data.success) {

@@ -6,9 +6,13 @@ import authMiddleware from '../middlewares/auth.middleware.js';
 import validate from '../middlewares/validate.middleware.js';
 import * as authValidator from '../validators/auth.validator.js';
 
+import { singleUpload } from '../middlewares/multer.middleware.js';
+
 const router = express.Router();
 
-router.post('/register', validate(authValidator.validateRegister), authController.register);
+router.post('/register', singleUpload, validate(authValidator.validateRegister), authController.register);
+
+router.post('/profile/update', authMiddleware, singleUpload, authController.updateProfile);
 
 router.post('/verify-otp', validate(authValidator.validateVerifyOTP), authController.verifyOTP);
 
