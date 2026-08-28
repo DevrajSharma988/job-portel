@@ -30,3 +30,14 @@ export const getAdminJobs = asyncHandler(async (req, res) => {
 
     return new ApiResponse(res, STATUS_CODES.OK, undefined, { jobs });
 });
+
+export const updateJob = asyncHandler(async (req, res) => {
+    jobValidator.validateCreateJob(req.body); // uses same validation
+    const job = await jobService.updateJob(req.params.id, req.body, req.id);
+    return new ApiResponse(res, STATUS_CODES.OK, "Job updated successfully.", { job });
+});
+
+export const deleteJob = asyncHandler(async (req, res) => {
+    await jobService.deleteJob(req.params.id, req.id);
+    return new ApiResponse(res, STATUS_CODES.OK, "Job deleted successfully.", undefined);
+});

@@ -20,3 +20,23 @@ export const findJobsByCreator = async (adminId) => {
     createdAt: -1,
   });
 };
+
+export const findJobById = async (jobId) => {
+  return await Job.findById(jobId);
+};
+
+export const deleteJobById = async (jobId) => {
+  return await Job.findByIdAndDelete(jobId);
+};
+
+export const deleteJobsByCompanyId = async (companyId) => {
+  return await Job.deleteMany({ company: companyId });
+};
+
+export const findJobsByCompanyId = async (companyId) => {
+  return await Job.find({ company: companyId });
+};
+
+export const updateJobById = async (jobId, updateData) => {
+  return await Job.findByIdAndUpdate(jobId, updateData, { new: true });
+};

@@ -32,3 +32,8 @@ export const updateCompany = asyncHandler(async (req, res) => {
 
     return new ApiResponse(res, STATUS_CODES.OK, "Company information updated.", undefined);
 });
+
+export const deleteCompany = asyncHandler(async (req, res) => {
+    await companyService.deleteCompany(req.params.id, req.id);
+    return new ApiResponse(res, STATUS_CODES.OK, "Company deleted successfully.", undefined);
+});

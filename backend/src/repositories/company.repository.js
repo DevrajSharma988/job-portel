@@ -19,3 +19,7 @@ export const findCompanyById = async (companyId) => {
 export const updateCompanyById = async (companyId, updateData) => {
   return await Company.findByIdAndUpdate(companyId, updateData, { new: true });
 };
+
+export const deleteCompanyById = async (companyId) => {
+  return await Company.findByIdAndDelete(companyId);
+};

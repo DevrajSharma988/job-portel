@@ -20,10 +20,10 @@ const jobSchema = new mongoose.Schema({
         type:Number,
         required:true,
     },
-    location: {
+    location: [{
         type: String,
         required: true
-    },
+    }],
     jobType: {
         type: String,
         required: true

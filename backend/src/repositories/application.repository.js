@@ -39,3 +39,15 @@ export const findApplicationById = async (applicationId) => {
 export const findJobById = async (jobId) => {
   return await Job.findById(jobId);
 };
+
+export const deleteApplicationsByJobId = async (jobId) => {
+  return await Application.deleteMany({ job: jobId });
+};
+
+export const deleteApplicationsByJobIds = async (jobIds) => {
+  return await Application.deleteMany({ job: { $in: jobIds } });
+};
+
+export const countApplicationsByJobId = async (jobId) => {
+  return await Application.countDocuments({ job: jobId });
+};

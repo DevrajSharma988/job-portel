@@ -1,6 +1,6 @@
 import express from "express";
 import authMiddleware from "../middlewares/auth.middleware.js";
-import { getCompany, getCompanyById, registerCompany, updateCompany } from "../controllers/company.controller.js";
+import { getCompany, getCompanyById, registerCompany, updateCompany, deleteCompany } from "../controllers/company.controller.js";
 import { singleUpload } from "../middlewares/multer.middleware.js";
 import validate from "../middlewares/validate.middleware.js";
 import validateObjectId from "../middlewares/validateObjectId.middleware.js";
@@ -15,5 +15,7 @@ router.get("/get", authMiddleware, getCompany);
 router.get("/get/:id", authMiddleware, validateObjectId('id'), getCompanyById);
 
 router.put("/update/:id", authMiddleware, validateObjectId('id'), singleUpload, updateCompany);
+
+router.delete("/delete/:id", authMiddleware, validateObjectId('id'), deleteCompany);
 
 export default router;

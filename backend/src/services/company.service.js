@@ -1,10 +1,17 @@
 import ApiError from "../utils/ApiError.util.js";
 import STATUS_CODES from "../constants/statusCodes.constant.js";
 import * as companyRepository from "../repositories/company.repository.js";
+import * as jobRepository from "../repositories/job.repository.js";
+import * as applicationRepository from "../repositories/application.repository.js";
 import getDataUri from "../utils/datauri.util.js";
 import cloudinary from "../config/cloudinary.config.js";
 
 export const registerCompany = async ({ companyName, userId }) => {
+  const existingCompanies = await companyRepository.findCompaniesByUserId(userId);
+  if (existingCompanies && existingCompanies.length > 0) {
+    throw new ApiError(STATUS_CODES.CONFLICT, "You have already registered a company.");
+  }
+
   let company = await companyRepository.findCompanyByName(companyName);
   if (company) {
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "You can't register same company.");
@@ -47,9 +54,34 @@ export const updateCompany = async (companyId, updateData, file, userId) => {
   }
 
   const dataToUpdate = { ...updateData };
+  delete dataToUpdate.name; // Company name immutability
   if (logo) dataToUpdate.logo = logo;
 
   const company = await companyRepository.updateCompanyById(companyId, dataToUpdate);
 
   return company;
+};
+
+export const deleteCompany = async (companyId, userId) => {
+  const company = await companyRepository.findCompanyById(companyId);
+  if (!company) {
+    throw new ApiError(STATUS_CODES.NOT_FOUND, "Company not found.");
+  }
+  if (company.userId.toString() !== userId.toString()) {
+    throw new ApiError(STATUS_CODES.FORBIDDEN, "You do not have permission to delete this company.");
+  }
+
+  const jobs = await jobRepository.findJobsByCompanyId(companyId);
+  const jobIds = jobs.map(job => job._id);
+
+  // Cascade delete applications for all jobs
+  if (jobIds.length > 0) {
+    await applicationRepository.deleteApplicationsByJobIds(jobIds);
+  }
+
+  // Cascade delete jobs
+  await jobRepository.deleteJobsByCompanyId(companyId);
+
+  // Delete company
+  await companyRepository.deleteCompanyById(companyId);
 };

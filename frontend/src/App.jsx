@@ -15,6 +15,7 @@ import CompanyCreate from './pages/admin/CompanyCreate'
 import CompanySetup from './pages/admin/CompanySetup'
 import AdminJobs from "./pages/admin/AdminJobs";
 import PostJob from './pages/admin/PostJob'
+import EditJob from './pages/admin/EditJob'
 import Applicants from './pages/admin/Applicants'
 import ProtectedRoute from './pages/admin/ProtectedRoute'
 import RecruiterDashboard from './pages/admin/RecruiterDashboard'
@@ -85,6 +86,10 @@ const appRouter = createBrowserRouter([
   {
     path:"/admin/jobs/create",
     element:<CompanyRequiredRoute><PostJob/></CompanyRequiredRoute> 
+  },
+  {
+    path:"/admin/jobs/edit/:id",
+    element:<CompanyRequiredRoute><EditJob/></CompanyRequiredRoute> 
   },
   {
     path:"/admin/jobs/:id/applicants",
