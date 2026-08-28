@@ -1,5 +1,4 @@
 import validator from 'validator';
-
 import ApiError from '../ApiError.util.js';
 
 import STATUS_CODES from '../../constants/statusCodes.constant.js';

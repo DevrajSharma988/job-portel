@@ -42,9 +42,7 @@ export const updateForgotPasswordOTP = async (email, hashedOTP, expiresAt) => {
       forgotPasswordOTP: hashedOTP,
       forgotPasswordOTPExpires: expiresAt,
     },
-    {
-      new: true,
-    }
+    { new: true }
   );
 };
 
@@ -56,20 +54,14 @@ export const resetPassword = async (email, hashedPassword) => {
       forgotPasswordOTP: null,
       forgotPasswordOTPExpires: null,
     },
-    {
-      new: true,
-    }
+    { new: true }
   );
 };
 
 export const changePassword = async (userId, hashedPassword) => {
   return await User.findByIdAndUpdate(
     userId,
-    {
-      password: hashedPassword,
-    },
-    {
-      new: true,
-    }
+    { password: hashedPassword },
+    { new: true }
   );
 };

@@ -1,130 +1,33 @@
-import { Application } from "../models/application.model.js";
-import { Job } from "../models/job.model.js";
+import asyncHandler from "../utils/asyncHandler.util.js";
+import ApiResponse from "../utils/ApiResponse.util.js";
+import * as applicationValidator from "../validators/application.validator.js";
+import * as applicationService from "../services/application.service.js";
+import STATUS_CODES from "../constants/statusCodes.constant.js";
 
-export const applyJob = async (req, res) => {
-    try {
-        const userId = req.user._id;
-        const jobId = req.params.id;
-        if (!jobId) {
-            return res.status(400).json({
-                message: "Job id is required.",
-                success: false
-            })
-        };
-        // check if the user has already applied for the job
-        const existingApplication = await Application.findOne({ job: jobId, applicant: userId });
+export const applyJob = asyncHandler(async (req, res) => {
+    applicationValidator.validateApplyJob(req.params);
 
-        if (existingApplication) {
-            return res.status(400).json({
-                message: "You have already applied for this jobs",
-                success: false
-            });
-        }
+    await applicationService.applyJob(req.id, req.params.id);
 
-        // check if the jobs exists
-        const job = await Job.findById(jobId);
-        if (!job) {
-            return res.status(404).json({
-                message: "Job not found",
-                success: false
-            })
-        }
-        // create a new application
-        const newApplication = await Application.create({
-            job:jobId,
-            applicant:userId,
-        });
+    return new ApiResponse(res, STATUS_CODES.CREATED, "Job applied successfully.", undefined);
+});
 
-        job.applications.push(newApplication._id);
-        await job.save();
-        return res.status(201).json({
-            message:"Job applied successfully.",
-            success:true
-        })
-    } catch (error) {
-        console.log(error);
-    }
-};
-export const getAppliedJobs = async (req,res) => {
-    try {
-        const userId = req.user._id;
-        const application = await Application.find({applicant:userId}).sort({createdAt:-1}).populate({
-            path:'job',
-            options:{sort:{createdAt:-1}},
-            populate:{
-                path:'company',
-                options:{sort:{createdAt:-1}},
-            }
-        });
-        if(!application){
-            return res.status(404).json({
-                message:"No Applications",
-                success:false
-            })
-        };
-        return res.status(200).json({
-            application,
-            success:true
-        })
-    } catch (error) {
-        console.log(error);
-    }
-}
-// recruiter dekhega kitna user ne apply kiya hai
-export const getApplicants = async (req,res) => {
-    try {
-        const jobId = req.params.id;
-        const job = await Job.findById(jobId).populate({
-            path:'applications',
-            options:{sort:{createdAt:-1}},
-            populate:{
-                path:'applicant'
-            }
-        });
-        if(!job){
-            return res.status(404).json({
-                message:'Job not found.',
-                success:false
-            })
-        };
-        return res.status(200).json({
-            job, 
-            succees:true
-        });
-    } catch (error) {
-        console.log(error);
-    }
-}
-export const updateStatus = async (req,res) => {
-    try {
-        const {status} = req.body;
-        const applicationId = req.params.id;
-        if(!status){
-            return res.status(400).json({
-                message:'status is required',
-                success:false
-            })
-        };
+export const getAppliedJobs = asyncHandler(async (req, res) => {
+    const application = await applicationService.getAppliedJobs(req.id);
 
-        // find the application by applicantion id
-        const application = await Application.findOne({_id:applicationId});
-        if(!application){
-            return res.status(404).json({
-                message:"Application not found.",
-                success:false
-            })
-        };
+    return new ApiResponse(res, STATUS_CODES.OK, undefined, { application });
+});
 
-        // update the status
-        application.status = status.toLowerCase();
-        await application.save();
+export const getApplicants = asyncHandler(async (req, res) => {
+    const job = await applicationService.getApplicants(req.params.id);
 
-        return res.status(200).json({
-            message:"Status updated successfully.",
-            success:true
-        });
+    return new ApiResponse(res, STATUS_CODES.OK, undefined, { job });
+});
 
-    } catch (error) {
-        console.log(error);
-    }
-}
+export const updateStatus = asyncHandler(async (req, res) => {
+    applicationValidator.validateUpdateStatus(req.body);
+
+    await applicationService.updateStatus(req.params.id, req.body.status);
+
+    return new ApiResponse(res, STATUS_CODES.OK, "Status updated successfully.", undefined);
+});

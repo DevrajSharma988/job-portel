@@ -110,7 +110,7 @@ axios.interceptors.response.use(
       }
       originalRequest._retry = true;
       try {
-        await axios.post(`${USER_API_END_POINT}/refresh`, {}, { withCredentials: true });
+        await axios.post(`${USER_API_END_POINT}/refresh-token`, {}, { withCredentials: true });
         return axios(originalRequest);
       } catch (refreshError) {
         // If refresh fails, tokens are dead. Clear state and kick to login.

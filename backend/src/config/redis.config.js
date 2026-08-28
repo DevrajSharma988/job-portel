@@ -39,4 +39,3 @@ const connectRedis = async () => {
 };
 
 export { redisClient, connectRedis };
-export default redisClient;

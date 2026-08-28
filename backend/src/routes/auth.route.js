@@ -1,36 +1,35 @@
 import express from 'express';
 
-import {
-  register,
-  verifyOTP,
-  resendOTP,
-  login,
-  refresh,
-  logout,
-  getCurrentUser,
-  forgotPassword,
-  verifyForgotPasswordOTP,
-  resetPassword,
-  changePassword,
-} from '../controllers/auth.controller.js';
+import * as authController from '../controllers/auth.controller.js';
 
-import { authMiddleware } from '../middlewares/auth.middleware.js';
+import authMiddleware from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
-router.post('/register', register);
-router.post('/verify-otp', verifyOTP);
-router.post('/resend-otp', resendOTP);
-router.post('/login', login);
-router.post('/refresh', refresh);
-router.post('/logout', authMiddleware, logout);
+router.post('/register', authController.register);
 
-router.get('/me', authMiddleware, getCurrentUser);
+router.post('/verify-otp', authController.verifyOTP);
 
-router.post('/forgot-password', forgotPassword);
-router.post('/verify-forgot-password-otp', verifyForgotPasswordOTP);
-router.post('/reset-password', resetPassword);
+router.post('/resend-otp', authController.resendOTP);
 
-router.put('/change-password', authMiddleware, changePassword);
+router.post('/login',  authController.login);
+
+router.post('/forgot-password',  authController.forgotPassword);
+
+router.post('/verify-forgot-password-otp', authController.verifyForgotPasswordOTP);
+
+router.post('/reset-password', authController.resetPassword);
+
+router.patch(
+  '/change-password',
+  authMiddleware,
+  authController.changePassword
+);
+
+router.post('/refresh-token', authController.refresh);
+
+router.post('/logout', authMiddleware, authController.logout);
+
+router.get('/me', authMiddleware, authController.getCurrentUser);
 
 export default router;

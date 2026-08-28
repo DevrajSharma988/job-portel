@@ -30,7 +30,7 @@ const UpdatePasswordDialog = ({ open, setOpen }) => {
         e.preventDefault();
         try {
             setLoading(true);
-            const res = await axios.put(`${USER_API_END_POINT}/change-password`, input, {
+            const res = await axios.patch(`${USER_API_END_POINT}/change-password`, input, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
