@@ -5,6 +5,7 @@ import * as jobService from "../services/job.service.js";
 import STATUS_CODES from "../constants/statusCodes.constant.js";
 
 export const postJob = asyncHandler(async (req, res) => {
+    jobValidator.validateCreateJob(req.body);
     const job = await jobService.createJob(req.body, req.id);
 
     return new ApiResponse(res, STATUS_CODES.CREATED, "New job created successfully.", { job });
