@@ -15,10 +15,11 @@ import storage from 'redux-persist/lib/storage'
 import companySlice from "./companySlice";
 import applicationSlice from "./applicationSlice";
 
-const persistConfig = {
+const rootPersistConfig = {
     key: 'root',
     version: 1,
     storage,
+    blacklist: [] // We persist everything for now, but we'll reset loading in main.jsx or similar
 }
 
 const rootReducer = combineReducers({
@@ -28,7 +29,7 @@ const rootReducer = combineReducers({
     application:applicationSlice
 })
 
-const persistedReducer = persistReducer(persistConfig, rootReducer)
+const persistedReducer = persistReducer(rootPersistConfig, rootReducer)
 
 
 const store = configureStore({

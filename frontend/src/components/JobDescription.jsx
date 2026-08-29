@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from '@/utils/constant';
 import { setSingleJob } from '@/redux/jobSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
+import { ArrowLeft } from 'lucide-react';
 
 const JobDescription = () => {
     const {singleJob} = useSelector(store => store.job);
@@ -17,6 +18,7 @@ const JobDescription = () => {
     const params = useParams();
     const jobId = params.id;
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const applyJobHandler = async () => {
         try {
@@ -51,8 +53,12 @@ const JobDescription = () => {
     },[jobId,dispatch, user?._id]);
 
     return (
-        <div className='max-w-7xl mx-auto my-10'>
-            <div className='flex items-center justify-between'>
+        <div className='max-w-7xl mx-auto my-10 px-4'>
+            <Button onClick={() => navigate(-1)} variant="ghost" className="flex items-center gap-2 mb-6">
+                <ArrowLeft className="w-5 h-5"/>
+                Back
+            </Button>
+            <div className='flex flex-col md:flex-row items-start md:items-center justify-between gap-4'>
                 <div>
                     <h1 className='font-bold text-xl'>{singleJob?.title}</h1>
                     <div className='flex items-center gap-2 mt-4'>
@@ -71,7 +77,15 @@ const JobDescription = () => {
             <h1 className='border-b-2 border-b-gray-300 font-medium py-4'>Job Description</h1>
             <div className='my-4'>
                 <h1 className='font-bold my-1'>Role: <span className='pl-4 font-normal text-gray-800'>{singleJob?.title}</span></h1>
-                <h1 className='font-bold my-1'>Location: <span className='pl-4 font-normal text-gray-800'>{singleJob?.location}</span></h1>
+                <h1 className='font-bold my-1 flex items-center'>Location: 
+                    <span className='pl-4 font-normal text-gray-800 flex gap-2'>
+                        {Array.isArray(singleJob?.location) ? singleJob.location.map((loc, i) => (
+                            <Badge key={i} variant="outline" className="text-gray-700 bg-gray-50">{loc}</Badge>
+                        )) : (
+                            <Badge variant="outline" className="text-gray-700 bg-gray-50">{singleJob?.location}</Badge>
+                        )}
+                    </span>
+                </h1>
                 <h1 className='font-bold my-1'>Description: <span className='pl-4 font-normal text-gray-800'>{singleJob?.description}</span></h1>
                 <h1 className='font-bold my-1'>Experience: <span className='pl-4 font-normal text-gray-800'>{singleJob?.experience} yrs</span></h1>
                 <h1 className='font-bold my-1'>Salary: <span className='pl-4 font-normal text-gray-800'>{singleJob?.salary}LPA</span></h1>
