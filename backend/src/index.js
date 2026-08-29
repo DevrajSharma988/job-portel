@@ -21,8 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 const corsOptions = {
     origin: [
-        'http://localhost:5173',
-        'https://job-portel-1-42el.onrender.com'
+       process.env.FRONTEND_URL
     ],
     credentials: true
 }
