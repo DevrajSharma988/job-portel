@@ -54,9 +54,9 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         formData.append("bio", input.bio);
         if (user?.role === 'applicant') {
             formData.append("skills", JSON.stringify(input.skills));
-            if (input.file) {
-                formData.append("file", input.file);
-            }
+        }
+        if (input.file) {
+            formData.append("file", input.file);
         }
         try {
             setLoading(true);
@@ -85,7 +85,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     return (
         <div>
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="sm:max-w-[425px]" onInteractOutside={() => setOpen(false)}>
+                <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto" onInteractOutside={() => setOpen(false)}>
                     <DialogHeader>
                         <DialogTitle>Update Profile</DialogTitle>
                     </DialogHeader>
@@ -95,7 +95,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                 <Label htmlFor="name" className="text-right">Name</Label>
                                 <Input
                                     id="name"
-                                    name="name"
+                                    name="fullname"
                                     type="text"
                                     value={input.fullname}
                                     onChange={changeEventHandler}
@@ -109,8 +109,8 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                     name="email"
                                     type="email"
                                     value={input.email}
-                                    onChange={changeEventHandler}
-                                    className="col-span-3"
+                                    className="col-span-3 bg-gray-100 text-gray-500 cursor-not-allowed"
+                                    disabled
                                 />
                             </div>
                             <div className='grid grid-cols-4 items-center gap-4'>
@@ -125,7 +125,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                             </div>
                             <div className='grid grid-cols-4 items-start gap-4'>
                                 <Label htmlFor="bio" className="text-right mt-3">Bio</Label>
-                                <div className="col-span-3 relative">
+                                <div className="col-span-3 relative pb-6">
                                     <textarea
                                         id="bio"
                                         name="bio"
@@ -138,7 +138,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                         }}
                                         className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-none overflow-hidden min-h-[80px]"
                                     />
-                                    <span className="text-xs text-gray-500 absolute -bottom-5 right-1">
+                                    <span className="text-xs text-gray-500 absolute bottom-0 right-1">
                                         {input.bio?.length || 0} / 300
                                     </span>
                                 </div>
@@ -182,14 +182,25 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                         </div>
                                     </div>
                                     <div className='grid grid-cols-4 items-center gap-4'>
-                                        <Label htmlFor="file" className="text-right">Resume</Label>
+                                        <Label htmlFor="resumeFile" className="text-right">Resume</Label>
                                         <Input
-                                            id="file"
+                                            id="resumeFile"
                                             name="file"
                                             type="file"
                                             accept="application/pdf"
                                             onChange={fileChangeHandler}
-                                            className="col-span-3"
+                                            className="col-span-3 file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                                        />
+                                    </div>
+                                    <div className='grid grid-cols-4 items-center gap-4'>
+                                        <Label htmlFor="photoFile" className="text-right">Profile Photo</Label>
+                                        <Input
+                                            id="photoFile"
+                                            name="file"
+                                            type="file"
+                                            accept="image/jpeg, image/png, image/jpg"
+                                            onChange={fileChangeHandler}
+                                            className="col-span-3 file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
                                         />
                                     </div>
                                 </>
@@ -200,9 +211,9 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                         id="file"
                                         name="file"
                                         type="file"
-                                        accept="image/*"
+                                        accept="image/jpeg, image/png, image/jpg"
                                         onChange={fileChangeHandler}
-                                        className="col-span-3"
+                                        className="col-span-3 file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
                                     />
                                 </div>
                             )}

@@ -56,7 +56,7 @@ const CompanySetup = () => {
             });
             if (res.data.success) {
                 toast.success(res.data.message);
-                navigate("/admin/companies");
+                navigate("/admin/dashboard");
             }
         } catch (error) {
             console.log(error);
@@ -74,7 +74,7 @@ const CompanySetup = () => {
             });
             if (res.data.success) {
                 toast.success(res.data.message);
-                navigate("/admin/companies");
+                navigate("/admin/dashboard");
             }
         } catch (error) {
             console.log(error);
@@ -102,7 +102,7 @@ const CompanySetup = () => {
                 <form onSubmit={submitHandler} className='bg-white shadow-sm border border-gray-200 rounded-xl p-8'>
                     <div className='flex flex-col sm:flex-row sm:items-center justify-between pb-8 border-b border-gray-100 mb-8 gap-4'>
                         <div className='flex items-center gap-5'>
-                            <Button type="button" onClick={() => navigate("/admin/companies")} variant="outline" className="flex items-center gap-2 font-semibold">
+                            <Button type="button" onClick={() => navigate("/admin/dashboard")} variant="outline" className="flex items-center gap-2 font-semibold">
                                 <ArrowLeft className="w-4 h-4"/>
                                 <span>Back</span>
                             </Button>
@@ -165,7 +165,7 @@ const CompanySetup = () => {
                             <Label className="text-gray-700 font-semibold text-base">Company Logo</Label>
                             <Input
                                 type="file"
-                                accept="image/*"
+                                accept="image/jpeg, image/png, image/jpg"
                                 onChange={changeFileHandler}
                                 className="mt-2 py-4 file:bg-blue-50 file:text-blue-700 file:border-0 file:rounded-md hover:file:bg-blue-100 cursor-pointer"
                             />

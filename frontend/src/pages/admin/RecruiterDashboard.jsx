@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import Navbar from '../../components/shared/Navbar';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import useGetAllCompanies from '@/hooks/useGetAllCompanies';
-import useGetAllAdminJobs from '@/hooks/useGetAllAdminJobs';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { Mail, Contact, Pen, Briefcase, Building2, Users, LogOut, FileText } from 'lucide-react';
-import UpdateProfileDialog from '@/components/UpdateProfileDialog';
-import UpdatePasswordDialog from '@/components/UpdatePasswordDialog';
 import axios from 'axios';
 import { USER_API_END_POINT } from '@/utils/constant';
 import { setUser } from '@/redux/authSlice';
 import { toast } from 'sonner';
+import useGetAllCompanies from '@/hooks/useGetAllCompanies';
+import useGetAllAdminJobs from '@/hooks/useGetAllAdminJobs';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Mail, Contact, Pen, Briefcase, Building2, Users, LogOut, FileText, Camera } from 'lucide-react';
+import UpdateProfileDialog from '@/components/UpdateProfileDialog';
+import UpdatePasswordDialog from '@/components/UpdatePasswordDialog';
 
 const RecruiterDashboard = () => {
     const { loading: companiesLoading } = useGetAllCompanies(); // Fetches companies and populates redux
@@ -24,6 +24,28 @@ const RecruiterDashboard = () => {
     const navigate = useNavigate();
     const [openProfile, setOpenProfile] = useState(false);
     const [openPassword, setOpenPassword] = useState(false);
+
+    const handleImageChange = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const res = await axios.post(`${USER_API_END_POINT}/profile/update`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                withCredentials: true
+            });
+            if (res.data.success) {
+                dispatch(setUser(res.data.user));
+                toast.success("Profile photo updated successfully!");
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response?.data?.message || "Failed to update photo");
+        }
+    };
 
     const hasCompany = companies && companies.length > 0;
     const singleCompany = hasCompany ? companies[0] : null;
@@ -63,9 +85,16 @@ const RecruiterDashboard = () => {
                 <div className='bg-white border border-gray-200 shadow-sm rounded-xl p-8 mb-8'>
                     <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-6'>
                         <div className='flex items-center gap-6'>
-                            <Avatar className="h-24 w-24 border-2 border-gray-100 shadow-sm">
-                                <AvatarImage src={user?.profile?.profilePhoto || "https://www.shutterstock.com/image-vector/circle-line-simple-design-logo-600nw-2174926871.jpg"} alt="profile" />
-                            </Avatar>
+                            <div className="relative group">
+                                <Avatar className="h-24 w-24 border-2 border-gray-100 shadow-sm">
+                                    <AvatarImage src={user?.profile?.profilePhoto} alt="profile" />
+                                    <AvatarFallback className="text-3xl font-bold bg-blue-100 text-blue-600 uppercase">{user?.fullname?.[0]}</AvatarFallback>
+                                </Avatar>
+                                <label htmlFor="photo-upload-recruiter" className="absolute bottom-0 right-0 p-1.5 bg-blue-600 rounded-full text-white cursor-pointer hover:bg-blue-700 shadow-md transition-colors">
+                                    <Camera className="w-4 h-4" />
+                                </label>
+                                <input id="photo-upload-recruiter" type="file" accept="image/jpeg, image/png, image/jpg" className="hidden" onChange={handleImageChange} />
+                            </div>
                             <div>
                                 <h1 className='font-bold text-2xl text-gray-900'>{user?.fullname}</h1>
                                 <p className='text-gray-500 mt-1'>{user?.profile?.bio || "No bio provided"}</p>
@@ -132,7 +161,7 @@ const RecruiterDashboard = () => {
                                 <Button 
                                     className="w-full mt-auto" 
                                     variant="outline" 
-                                    onClick={() => navigate("/admin/companies")}
+                                    onClick={() => navigate(`/admin/companies/${singleCompany._id}`)}
                                 >
                                     Manage Company
                                 </Button>
@@ -154,7 +183,7 @@ const RecruiterDashboard = () => {
                                     variant="outline"
                                     onClick={() => navigate("/admin/jobs")}
                                 >
-                                    View Jobs
+                                    Manage Jobs
                                 </Button>
                             </div>
 
@@ -172,7 +201,7 @@ const RecruiterDashboard = () => {
                                 <Button 
                                     className="w-full mt-auto" 
                                     variant="outline"
-                                    onClick={() => navigate("/admin/jobs")}
+                                    onClick={() => navigate("/admin/applications")}
                                 >
                                     Review Applicants
                                 </Button>

@@ -9,7 +9,7 @@ import axios from 'axios'
 import { JOB_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
-import { Loader2, Plus, X } from 'lucide-react'
+import { Loader2, Plus, X, ArrowLeft } from 'lucide-react'
 
 const PostJob = () => {
     const [input, setInput] = useState({
@@ -17,7 +17,8 @@ const PostJob = () => {
         description: "",
         requirements: "",
         salary: "",
-        jobType: "",
+        employmentType: "",
+        workMode: "",
         experience: "",
         position: 0,
         companyId: ""
@@ -78,6 +79,10 @@ const PostJob = () => {
         <div>
             <Navbar />
             <div className='max-w-5xl mx-auto my-10 px-4'>
+                <Button onClick={() => navigate(-1)} variant="ghost" className="flex items-center gap-2 mb-4">
+                    <ArrowLeft className="w-5 h-5"/>
+                    Back
+                </Button>
                 <div className='bg-white border border-gray-200 shadow-sm rounded-xl p-8'>
                     <div className='mb-8'>
                         <h1 className='font-bold text-2xl text-gray-900'>Post a New Job</h1>
@@ -161,15 +166,39 @@ const PostJob = () => {
                             </div>
 
                             <div>
-                                <Label className="font-semibold text-gray-700">Job Type</Label>
-                                <Input
-                                    type="text"
-                                    name="jobType"
-                                    value={input.jobType}
-                                    onChange={changeEventHandler}
-                                    className="mt-2 py-5 focus-visible:ring-blue-600"
-                                    placeholder="e.g. Full-time, Remote"
-                                />
+                                <Label className="font-semibold text-gray-700">Employment Type</Label>
+                                <div className="mt-2">
+                                    <Select onValueChange={(value) => setInput({...input, employmentType: value})}>
+                                        <SelectTrigger className="w-full py-5">
+                                            <SelectValue placeholder="Select Employment Type" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectItem value="Permanent">Permanent</SelectItem>
+                                                <SelectItem value="Internship">Internship</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                            <div>
+                                <Label className="font-semibold text-gray-700">Work Mode</Label>
+                                <div className="mt-2">
+                                    <Select onValueChange={(value) => setInput({...input, workMode: value})}>
+                                        <SelectTrigger className="w-full py-5">
+                                            <SelectValue placeholder="Select Work Mode" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectItem value="Full-time">Full-time</SelectItem>
+                                                <SelectItem value="Part-time">Part-time</SelectItem>
+                                                <SelectItem value="Remote">Remote</SelectItem>
+                                                <SelectItem value="On-site">On-site</SelectItem>
+                                                <SelectItem value="Hybrid">Hybrid</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
                             <div>
                                 <Label className="font-semibold text-gray-700">Experience Level (Years)</Label>

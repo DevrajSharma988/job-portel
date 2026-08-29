@@ -48,7 +48,7 @@ const CompanyRequiredRoute = ({ children }) => {
     if (loading) {
         return <div className="h-screen flex items-center justify-center"><Loader2 className="animate-spin w-8 h-8" /></div>;
     }
-
+    
     return <>{children}</>;
 };
 

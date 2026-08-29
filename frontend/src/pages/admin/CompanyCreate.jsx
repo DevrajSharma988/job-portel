@@ -10,6 +10,7 @@ import { toast } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
 import { setSingleCompany } from '@/redux/companySlice'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../../components/ui/dialog'
+import { ArrowLeft } from 'lucide-react'
 
 const CompanyCreate = () => {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ const CompanyCreate = () => {
 
     useEffect(() => {
         if (companies && companies.length > 0) {
-            navigate("/admin/companies");
+            navigate("/admin/dashboard");
             toast.error("You have already registered a company.");
         }
     }, [companies, navigate]);
@@ -59,6 +60,10 @@ const CompanyCreate = () => {
         <div>
             <Navbar />
             <div className='max-w-4xl mx-auto my-10 px-4'>
+                <Button onClick={() => navigate(-1)} variant="ghost" className="flex items-center gap-2 mb-4">
+                    <ArrowLeft className="w-5 h-5"/>
+                    Back
+                </Button>
                 <div className='bg-white border border-gray-200 shadow-sm rounded-xl p-8 max-w-2xl mx-auto'>
                     <div className='mb-8'>
                         <h1 className='font-bold text-2xl text-gray-900'>Register Your Company</h1>
@@ -77,7 +82,7 @@ const CompanyCreate = () => {
                             />
                         </div>
                         <div className='flex items-center gap-4 pt-4 border-t'>
-                            <Button variant="outline" className="w-full text-base py-6" onClick={() => navigate("/admin/companies")}>Cancel</Button>
+                            <Button variant="outline" className="w-full text-base py-6" onClick={() => navigate("/admin/dashboard")}>Cancel</Button>
                             <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white text-base py-6" onClick={handleContinue}>Continue</Button>
                         </div>
                     </div>

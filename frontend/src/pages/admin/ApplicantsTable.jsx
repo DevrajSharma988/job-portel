@@ -60,24 +60,27 @@ const ApplicantsTable = () => {
                                         {item?.status?.toUpperCase() || 'UNKNOWN'}
                                     </Badge>
                                 </TableCell>
-                                <TableCell className="float-right cursor-pointer">
-                                    <Popover>
-                                        <PopoverTrigger>
-                                            <MoreHorizontal />
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-32">
-                                            {
-                                                shortlistingStatus.map((status, index) => {
-                                                    return (
-                                                        <div onClick={() => statusHandler(status === 'Accept' ? 'accepted' : 'rejected', item?._id)} key={index} className='flex w-fit items-center my-2 cursor-pointer'>
-                                                            <span>{status}</span>
-                                                        </div>
-                                                    )
-                                                })
-                                            }
-                                        </PopoverContent>
-                                    </Popover>
-
+                                <TableCell className="text-right">
+                                    {item?.status?.toLowerCase() === 'pending' ? (
+                                        <Popover>
+                                            <PopoverTrigger>
+                                                <MoreHorizontal className="cursor-pointer mx-auto md:ml-auto md:mr-0"/>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-32 p-2">
+                                                {
+                                                    shortlistingStatus.map((status, index) => {
+                                                        return (
+                                                            <div onClick={() => statusHandler(status === 'Accept' ? 'accepted' : 'rejected', item?._id)} key={index} className='flex w-fit items-center my-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded w-full'>
+                                                                <span className={status === 'Accept' ? 'text-green-600' : 'text-red-600'}>{status}</span>
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </PopoverContent>
+                                        </Popover>
+                                    ) : (
+                                        <span className="text-sm text-gray-400 font-medium whitespace-nowrap">Decision Final</span>
+                                    )}
                                 </TableCell>
 
                             </tr>

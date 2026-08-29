@@ -24,9 +24,19 @@ const jobSchema = new mongoose.Schema({
         type: String,
         required: true
     }],
+    employmentType: {
+        type: String,
+        enum: ['Permanent', 'Internship'],
+        default: 'Permanent'
+    },
+    workMode: {
+        type: String,
+        enum: ['Full-time', 'Part-time', 'Remote', 'On-site', 'Hybrid'],
+        default: 'Full-time'
+    },
     jobType: {
         type: String,
-        required: true
+        required: false
     },
     position: {
         type: Number,

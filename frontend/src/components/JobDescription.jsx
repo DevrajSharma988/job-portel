@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from '@/utils/constant';
 import { setSingleJob } from '@/redux/jobSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
+import { ArrowLeft } from 'lucide-react';
 
 const JobDescription = () => {
     const {singleJob} = useSelector(store => store.job);
@@ -17,6 +18,7 @@ const JobDescription = () => {
     const params = useParams();
     const jobId = params.id;
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const applyJobHandler = async () => {
         try {
@@ -51,8 +53,12 @@ const JobDescription = () => {
     },[jobId,dispatch, user?._id]);
 
     return (
-        <div className='max-w-7xl mx-auto my-10'>
-            <div className='flex items-center justify-between'>
+        <div className='max-w-7xl mx-auto my-10 px-4'>
+            <Button onClick={() => navigate(-1)} variant="ghost" className="flex items-center gap-2 mb-6">
+                <ArrowLeft className="w-5 h-5"/>
+                Back
+            </Button>
+            <div className='flex flex-col md:flex-row items-start md:items-center justify-between gap-4'>
                 <div>
                     <h1 className='font-bold text-xl'>{singleJob?.title}</h1>
                     <div className='flex items-center gap-2 mt-4'>

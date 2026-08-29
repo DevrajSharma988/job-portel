@@ -5,7 +5,7 @@ import * as companyRepository from "../repositories/company.repository.js";
 import * as applicationRepository from "../repositories/application.repository.js";
 
 export const createJob = async (jobData, userId) => {
-  const { title, description, requirements, salary, location, jobType, experience, position, companyId } = jobData;
+  const { title, description, requirements, salary, location, employmentType, workMode, experience, position, companyId } = jobData;
   
   const company = await companyRepository.findCompanyById(companyId);
   if (!company) {
@@ -21,7 +21,8 @@ export const createJob = async (jobData, userId) => {
     requirements: requirements.split(","),
     salary: Number(salary),
     location,
-    jobType,
+    employmentType,
+    workMode,
     experienceLevel: experience,
     position,
     company: companyId,
@@ -89,7 +90,7 @@ export const updateJob = async (jobId, jobData, userId) => {
     throw new ApiError(STATUS_CODES.CONFLICT, "This job cannot be edited because candidates have already applied.");
   }
 
-  const { title, description, requirements, salary, location, jobType, experience, position } = jobData;
+  const { title, description, requirements, salary, location, employmentType, workMode, experience, position } = jobData;
 
   const updatedJob = await jobRepository.updateJobById(jobId, {
     title,
@@ -97,7 +98,8 @@ export const updateJob = async (jobId, jobData, userId) => {
     requirements: Array.isArray(requirements) ? requirements : requirements.split(","),
     salary: Number(salary),
     location,
-    jobType,
+    employmentType,
+    workMode,
     experienceLevel: experience,
     position
   });

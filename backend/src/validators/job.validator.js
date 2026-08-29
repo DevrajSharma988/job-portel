@@ -2,9 +2,9 @@ import ApiError from "../utils/ApiError.util.js";
 import STATUS_CODES from "../constants/statusCodes.constant.js";
 
 export const validateCreateJob = (body) => {
-  const { title, description, requirements, salary, location, jobType, experience, position, companyId } = body;
+  const { title, description, requirements, salary, location, employmentType, workMode, experience, position, companyId } = body;
   
-  if (!title || !description || !requirements || salary === undefined || salary === "" || !location || (Array.isArray(location) && location.length === 0) || !jobType || experience === undefined || experience === "" || position === undefined || position === "" || !companyId) {
+  if (!title || !description || !requirements || salary === undefined || salary === "" || !location || (Array.isArray(location) && location.length === 0) || !employmentType || !workMode || experience === undefined || experience === "" || position === undefined || position === "" || !companyId) {
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "All fields are required.");
   }
 

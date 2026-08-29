@@ -23,7 +23,14 @@ const AdminJobsTable = () => {
             if(!searchJobByText){
                 return true;
             }
-            return job?.title?.toLowerCase().includes(searchJobByText.toLowerCase()) || job?.company?.name.toLowerCase().includes(searchJobByText.toLowerCase());
+            const query = searchJobByText.toLowerCase();
+            const matchRole = job?.title?.toLowerCase().includes(query);
+            const matchSalary = job?.salary?.toString().includes(query);
+            const matchLocation = Array.isArray(job?.location) 
+                ? job.location.some(loc => loc.toLowerCase().includes(query))
+                : (job?.location && job.location.toLowerCase().includes(query));
+            
+            return matchRole || matchSalary || matchLocation;
         }) : [];
         setFilterJobs(filteredJobs);
     },[allAdminJobs,searchJobByText])

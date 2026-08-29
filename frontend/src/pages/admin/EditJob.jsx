@@ -9,7 +9,7 @@ import axios from 'axios'
 import { JOB_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Loader2, Plus, X } from 'lucide-react'
+import { Loader2, Plus, X, ArrowLeft } from 'lucide-react'
 
 const EditJob = () => {
     const { id } = useParams();
@@ -104,8 +104,12 @@ const EditJob = () => {
     return (
         <div>
             <Navbar />
-            <div className='flex items-center justify-center w-screen my-5'>
-                <form onSubmit = {submitHandler} className='p-8 max-w-4xl border border-gray-200 shadow-lg rounded-md'>
+            <div className='max-w-5xl mx-auto my-10 px-4'>
+                <Button onClick={() => navigate(-1)} variant="ghost" className="flex items-center gap-2 mb-4">
+                    <ArrowLeft className="w-5 h-5"/>
+                    Back
+                </Button>
+                <form onSubmit = {submitHandler} className='p-8 border border-gray-200 shadow-lg rounded-md'>
                     <h1 className="font-bold text-xl mb-5">Edit Job</h1>
                     <div className='grid grid-cols-2 gap-2'>
                         <div>

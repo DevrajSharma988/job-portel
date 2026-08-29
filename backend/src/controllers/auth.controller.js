@@ -31,6 +31,8 @@ export const updateProfile = asyncHandler(async (req, res) => {
   const payload = { ...req.body, userId: req.id };
   if (req.file) {
     payload.file = req.file;
+  } else {
+    delete payload.file;
   }
   const result = await authService.updateProfile(payload);
 

@@ -7,16 +7,18 @@ import ResetPassword from './pages/auth/ResetPassword'
 import VerifyEmail from './pages/auth/VerifyEmail'
 import Home from './pages/Home'
 import Jobs from './components/Jobs'
-import Browse from './components/Browse'
+import Explore from './components/Explore'
 import Profile from './components/Profile'
+import AppliedJobsPage from './components/AppliedJobsPage'
 import JobDescription from './components/JobDescription'
-import Companies from './pages/admin/Companies'
+
 import CompanyCreate from './pages/admin/CompanyCreate'
 import CompanySetup from './pages/admin/CompanySetup'
 import AdminJobs from "./pages/admin/AdminJobs";
 import PostJob from './pages/admin/PostJob'
 import EditJob from './pages/admin/EditJob'
 import Applicants from './pages/admin/Applicants'
+import AdminApplications from './pages/admin/AdminApplications'
 import ProtectedRoute from './pages/admin/ProtectedRoute'
 import RecruiterDashboard from './pages/admin/RecruiterDashboard'
 import CompanyRequiredRoute from './pages/admin/CompanyRequiredRoute'
@@ -55,22 +57,23 @@ const appRouter = createBrowserRouter([
     element: <JobDescription />
   },
   {
-    path: "/browse",
-    element: <Browse />
+    path: "/explore",
+    element: <Explore />
   },
   {
     path: "/profile",
     element: <Profile />
+  },
+  {
+    path: "/applied-jobs",
+    element: <AppliedJobsPage />
   },
   // admin ke liye yha se start hoga
   {
     path:"/admin/dashboard",
     element: <ProtectedRoute><RecruiterDashboard/></ProtectedRoute>
   },
-  {
-    path:"/admin/companies",
-    element: <ProtectedRoute><Companies/></ProtectedRoute>
-  },
+
   {
     path:"/admin/companies/create",
     element: <ProtectedRoute><CompanyCreate/></ProtectedRoute> 
@@ -94,6 +97,10 @@ const appRouter = createBrowserRouter([
   {
     path:"/admin/jobs/:id/applicants",
     element:<CompanyRequiredRoute><Applicants/></CompanyRequiredRoute> 
+  },
+  {
+    path:"/admin/applications",
+    element:<CompanyRequiredRoute><AdminApplications/></CompanyRequiredRoute> 
   },
 
 ])
