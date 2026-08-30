@@ -41,3 +41,13 @@ export const deleteJob = asyncHandler(async (req, res) => {
     await jobService.deleteJob(req.params.id, req.id);
     return new ApiResponse(res, STATUS_CODES.OK, "Job deleted successfully.", undefined);
 });
+
+export const toggleSaveJob = asyncHandler(async (req, res) => {
+    const result = await jobService.toggleSaveJob(req.params.id, req.id);
+    return new ApiResponse(res, STATUS_CODES.OK, result.isSaved ? "Job saved successfully." : "Job unsaved successfully.", { user: result.user, isSaved: result.isSaved });
+});
+
+export const getSavedJobs = asyncHandler(async (req, res) => {
+    const savedJobs = await jobService.getSavedJobs(req.id);
+    return new ApiResponse(res, STATUS_CODES.OK, undefined, { savedJobs });
+});

@@ -27,15 +27,25 @@ const Applicants = () => {
         fetchAllApplicants();
     }, []);
     return (
-        <div>
+        <div className="bg-[#EEF1F5] min-h-screen">
             <Navbar />
-            <div className='max-w-7xl mx-auto px-4 mt-5'>
-                <Button onClick={() => navigate(-1)} variant="ghost" className="flex items-center gap-2 mb-4">
-                    <ArrowLeft className="w-5 h-5"/>
-                    Back
-                </Button>
-                <h1 className='font-bold text-xl my-5'>Applicants {applicants?.applications?.length}</h1>
-                <ApplicantsTable />
+            <div className='max-w-7xl mx-auto px-4 mt-8 mb-12'>
+                <div className='bg-white border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl p-6 relative overflow-hidden'>
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-bl-full -mr-20 -mt-20 pointer-events-none opacity-50"></div>
+                    <div className='flex items-center gap-5 mb-8 pb-6 border-b border-slate-100 relative z-10'>
+                        <Button onClick={() => navigate(-1)} variant="outline" className="flex items-center gap-2 text-slate-600 font-semibold border-slate-200 bg-white hover:bg-slate-50 shadow-sm">
+                            <ArrowLeft className="w-4 h-4"/>
+                            <span>Back</span>
+                        </Button>
+                        <div>
+                            <h1 className='font-bold text-2xl text-slate-900 tracking-tight'>Applicants ({applicants?.applications?.length || 0})</h1>
+                            <p className="text-slate-500 mt-1">Review candidates who applied for this role.</p>
+                        </div>
+                    </div>
+                    <div className="relative z-10">
+                        <ApplicantsTable />
+                    </div>
+                </div>
             </div>
         </div>
     )

@@ -24,7 +24,7 @@ import STATUS_CODES from '../constants/statusCodes.constant.js';
 
 import { USER_ROLES } from '../constants/roles.constant.js';
 
-export const register = async ({ fullname, email, phoneNumber, password, role, file }) => {
+export const register = async ({ fullname, email, password, role, file }) => {
   const existingUser = await authRepository.findUserByEmail(email);
 
   if (existingUser) {
@@ -45,7 +45,6 @@ export const register = async ({ fullname, email, phoneNumber, password, role, f
   const user = await authRepository.createUser({
     fullname,
     email,
-    phoneNumber,
     password: hashedPassword,
     emailVerificationOTP: hashedOTP,
     emailVerificationOTPExpires: expiresAt,
@@ -69,7 +68,7 @@ export const register = async ({ fullname, email, phoneNumber, password, role, f
   };
 };
 
-export const updateProfile = async ({ userId, fullname, email, phoneNumber, bio, skills, file }) => {
+export const updateProfile = async ({ userId, fullname, email, bio, skills, file }) => {
   const user = await authRepository.findUserById(userId);
   if (!user) {
     throw new ApiError(STATUS_CODES.NOT_FOUND, 'User not found.');
@@ -77,7 +76,6 @@ export const updateProfile = async ({ userId, fullname, email, phoneNumber, bio,
 
   if (fullname) user.fullname = fullname;
   if (email) user.email = email;
-  if (phoneNumber) user.phoneNumber = phoneNumber;
   
   if (!user.profile) user.profile = {};
   if (bio) user.profile.bio = bio;
@@ -115,7 +113,6 @@ export const updateProfile = async ({ userId, fullname, email, phoneNumber, bio,
     _id: user._id,
     fullname: user.fullname,
     email: user.email,
-    phoneNumber: user.phoneNumber,
     role: user.role,
     profile: user.profile
   };
@@ -159,7 +156,6 @@ export const verifyOTP = async ({ email, otp }) => {
       _id: updatedUser._id,
       fullname: updatedUser.fullname,
       email: updatedUser.email,
-      phoneNumber: updatedUser.phoneNumber,
       profile: updatedUser.profile,
       role: updatedUser.role,
       isVerified: updatedUser.isVerified,

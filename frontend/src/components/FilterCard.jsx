@@ -10,12 +10,17 @@ const filterData = [
     {
         filterType: "Employment Type",
         field: "employmentTypes",
-        array: ["Permanent", "Internship"]
+        array: ["Permanent", "Internship", "Contract", "Freelance"]
+    },
+    {
+        filterType: "Job Type",
+        field: "jobTypes",
+        array: ["Full-time", "Part-time"]
     },
     {
         filterType: "Work Mode",
         field: "workModes",
-        array: ["Full-time", "Part-time", "Remote", "On-site", "Hybrid"]
+        array: ["Remote", "On-site", "Hybrid"]
     },
     {
         filterType: "Salary Range",
@@ -31,6 +36,7 @@ const FilterCard = () => {
         locations: [],
         industries: [],
         employmentTypes: [],
+        jobTypes: [],
         workModes: [],
         salaryRanges: []
     });
@@ -92,6 +98,7 @@ const FilterCard = () => {
             locations: [],
             industries: [],
             employmentTypes: [],
+            jobTypes: [],
             workModes: [],
             salaryRanges: []
         });
@@ -104,7 +111,7 @@ const FilterCard = () => {
     }, [selectedFilters, dispatch]);
 
     return (
-        <div className='w-full bg-white p-4 rounded-xl shadow-sm border border-gray-200'>
+        <div className='w-full bg-transparent'>
             <div className='flex items-center justify-between mb-4'>
                 <h1 className='font-bold text-lg text-gray-900'>Filter Jobs</h1>
                 <Button variant="ghost" size="sm" onClick={clearAll} className='text-sm text-blue-600 hover:text-blue-800 h-auto p-1'>

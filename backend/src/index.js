@@ -10,6 +10,7 @@ import applicationRoute from "./routes/application.route.js";
 import path from "path";
 import connectDB from "./config/db.config.js";
 import {connectRedis} from "./config/redis.config.js";
+import setupCronJobs from "./utils/cronJobs.util.js";
 
 
 const app = express();
@@ -21,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 const corsOptions = {
     origin: [
-       process.env.FRONTEND_URL
+        process.env.FRONTEND_URL
     ],
     credentials: true
 }
@@ -53,5 +54,6 @@ app.use(errorMiddleware);
 app.listen(PORT, async () => {
     await connectDB();
     await connectRedis();
+    setupCronJobs();
     console.log(`Server running at port ${PORT}`);
 })

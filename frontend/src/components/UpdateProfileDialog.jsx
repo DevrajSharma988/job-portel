@@ -17,7 +17,6 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     const [input, setInput] = useState({
         fullname: user?.fullname || "",
         email: user?.email || "",
-        phoneNumber: user?.phoneNumber || "",
         bio: user?.profile?.bio || "",
         skills: user?.profile?.skills || [],
         file: user?.profile?.resume || ""
@@ -50,7 +49,6 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         const formData = new FormData();
         formData.append("fullname", input.fullname);
         formData.append("email", input.email);
-        formData.append("phoneNumber", input.phoneNumber);
         formData.append("bio", input.bio);
         if (user?.role === 'applicant') {
             formData.append("skills", JSON.stringify(input.skills));
@@ -85,7 +83,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     return (
         <div>
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto" onInteractOutside={() => setOpen(false)}>
+                <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto" onInteractOutside={() => setOpen(false)} onOpenAutoFocus={(e) => e.preventDefault()}>
                     <DialogHeader>
                         <DialogTitle>Update Profile</DialogTitle>
                     </DialogHeader>
@@ -111,16 +109,6 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                     value={input.email}
                                     className="col-span-3 bg-gray-100 text-gray-500 cursor-not-allowed"
                                     disabled
-                                />
-                            </div>
-                            <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor="number" className="text-right">Number</Label>
-                                <Input
-                                    id="number"
-                                    name="number"
-                                    value={input.phoneNumber}
-                                    onChange={changeEventHandler}
-                                    className="col-span-3"
                                 />
                             </div>
                             <div className='grid grid-cols-4 items-start gap-4'>

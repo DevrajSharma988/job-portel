@@ -9,7 +9,7 @@ export const sendVerificationOTP = async (email, otp) => {
     const response = await resend.emails.send({
       from: process.env.EMAIL_FROM,
       to: email,
-      subject: 'Verify your Job Portal account',
+      subject: 'Verify your CareerNest account',
       html: verificationOTPTemplate(otp),
     });
     if (response.error) {
