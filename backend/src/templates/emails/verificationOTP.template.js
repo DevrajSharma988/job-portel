@@ -18,7 +18,7 @@ export const verificationOTPTemplate = (otp) => {
           <tr>
             <td style="background:#0f172a;padding:25px;text-align:center;">
               <h1 style="color:#ffffff;margin:0;">
-                Job Portal
+                CareerNest
               </h1>
             </td>
           </tr>
@@ -31,7 +31,7 @@ export const verificationOTPTemplate = (otp) => {
               </h2>
 
               <p style="color:#4b5563;font-size:16px;line-height:1.6;">
-                Welcome to the Job Portal.
+                Welcome to CareerNest.
               </p>
 
               <p style="color:#4b5563;font-size:16px;line-height:1.6;">
@@ -70,7 +70,7 @@ export const verificationOTPTemplate = (otp) => {
 
           <tr>
             <td style="background:#f9fafb;padding:20px;text-align:center;font-size:13px;color:#6b7280;">
-              © ${new Date().getFullYear()} Job Portal
+              © ${new Date().getFullYear()} CareerNest
             </td>
           </tr>
 

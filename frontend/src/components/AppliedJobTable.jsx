@@ -21,7 +21,11 @@ const AppliedJobTable = () => {
                 </TableHeader>
                 <TableBody>
                     {
-                        allAppliedJobs.length <= 0 ? <span>You haven't applied any job yet.</span> : allAppliedJobs.map((appliedJob) => (
+                        allAppliedJobs.length <= 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={4} className="text-center text-slate-500 py-10">You haven't applied any job yet.</TableCell>
+                            </TableRow>
+                        ) : allAppliedJobs.map((appliedJob) => (
                             <TableRow 
                                 key={appliedJob._id} 
                                 onClick={() => navigate(`/description/${appliedJob.job?._id}`)}

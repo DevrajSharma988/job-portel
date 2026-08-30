@@ -12,12 +12,30 @@ const jobSchema = new mongoose.Schema({
     requirements: [{
         type: String
     }],
-    salary: {
+    salary: { // Keep for fallback, but not strictly required
         type: Number,
-        required: true
+        default: 0
+    },
+    salaryType: {
+        type: String,
+        enum: ['Fixed', 'Range', 'Not Disclosed'],
+        default: 'Not Disclosed'
+    },
+    salaryMin: {
+        type: Number,
+        default: 0
+    },
+    salaryMax: {
+        type: Number,
+        default: 0
+    },
+    salaryPeriod: {
+        type: String,
+        enum: ['Yearly (LPA)', 'Monthly', 'Hourly'],
+        default: 'Yearly (LPA)'
     },
     experienceLevel:{
-        type:Number,
+        type: String,
         required:true,
     },
     location: [{
@@ -26,17 +44,18 @@ const jobSchema = new mongoose.Schema({
     }],
     employmentType: {
         type: String,
-        enum: ['Permanent', 'Internship'],
+        enum: ['Permanent', 'Internship', 'Contract', 'Freelance'],
         default: 'Permanent'
     },
     workMode: {
         type: String,
-        enum: ['Full-time', 'Part-time', 'Remote', 'On-site', 'Hybrid'],
-        default: 'Full-time'
+        enum: ['Remote', 'On-site', 'Hybrid'],
+        default: 'On-site'
     },
     jobType: {
         type: String,
-        required: false
+        enum: ['Full-time', 'Part-time'],
+        default: 'Full-time'
     },
     position: {
         type: Number,

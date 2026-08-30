@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/shared/Navbar'
 import { Label } from '../../components/ui/label'
 import { Input } from '../../components/ui/input'
-import { RadioGroup } from '../../components/ui/radio-group'
 import { Button } from '../../components/ui/button'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
@@ -67,49 +66,83 @@ const Login = () => {
         }
     },[user, navigate])
     return (
-        <div>
+        <div className="bg-white min-h-screen flex flex-col">
             <Navbar />
-            <div className='flex items-center justify-center max-w-7xl mx-auto'>
-                <form onSubmit={submitHandler} className='w-1/2 border border-gray-200 rounded-md p-4 my-10'>
-                    <h1 className='font-bold text-xl mb-5'>Login</h1>
-                    <div className='my-2'>
-                        <Label>Email</Label>
-                        <Input
-                            type="email"
-                            value={input.email}
-                            name="email"
-                            onChange={changeEventHandler}
-                            placeholder="patel@gmail.com"
-                        />
+            <div className='flex-1 flex w-full'>
+                <div className="hidden lg:flex w-1/2 bg-slate-50 items-center justify-center p-12 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-sky-300 rounded-full blur-[120px] opacity-40 pointer-events-none"></div>
+                    <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[400px] h-[400px] bg-blue-300 rounded-full blur-[120px] opacity-30 pointer-events-none"></div>
+                    <div className="z-10 max-w-lg text-center">
+                        <h2 className="text-4xl font-extrabold text-slate-900 mb-6 tracking-tight">Your Next Chapter Begins Here</h2>
+                        <p className="text-lg text-slate-600 leading-relaxed">
+                            Sign in to explore top jobs, connect with industry leaders, and take your career to the next level.
+                        </p>
                     </div>
+                </div>
 
-                    <div className='my-2'>
-                        <Label>Password</Label>
-                        <div className="relative">
-                            <Input
-                                type={showPassword ? "text" : "password"}
-                                value={input.password}
-                                name="password"
-                                onChange={changeEventHandler}
-                                placeholder="Your password"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                            >
-                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                            </button>
+                <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8 bg-[#EEF1F5] lg:bg-white relative">
+                    <form onSubmit={submitHandler} className='w-full max-w-md bg-white lg:bg-transparent border lg:border-none border-slate-200 rounded-2xl p-8 lg:p-0 shadow-sm lg:shadow-none relative z-10'>
+                        <div className="text-center lg:text-left mb-8">
+                            <h1 className='font-bold text-3xl text-slate-900 mb-2'>Welcome Back</h1>
+                            <p className="text-slate-500">Please enter your details to sign in.</p>
                         </div>
-                    </div>
-                    <div className='flex items-center justify-between mt-2 mb-4'>
-                        <Link to="/forgot-password" className='text-sm text-blue-600 hover:underline'>Forgot Password?</Link>
-                    </div>
-                    {
-                        loading ? <Button className="w-full my-4"> <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </Button> : <Button type="submit" className="w-full my-4">Login</Button>
-                    }
-                    <span className='text-sm'>Don't have an account? <Link to="/signup" className='text-blue-600'>Signup</Link></span>
-                </form>
+
+                        <div className='space-y-5'>
+                            <div className='space-y-2'>
+                                <Label className="text-slate-700 font-semibold">Email Address</Label>
+                                <Input
+                                    type="email"
+                                    value={input.email}
+                                    name="email"
+                                    onChange={changeEventHandler}
+                                    placeholder="name@example.com"
+                                    className="py-6 border-slate-200 focus-visible:ring-blue-600 bg-slate-50"
+                                />
+                            </div>
+
+                            <div className='space-y-2'>
+                                <div className="flex items-center justify-between">
+                                    <Label className="text-slate-700 font-semibold">Password</Label>
+                                    <Link to="/forgot-password" className='text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors'>Forgot Password?</Link>
+                                </div>
+                                <div className="relative">
+                                    <Input
+                                        type={showPassword ? "text" : "password"}
+                                        value={input.password}
+                                        name="password"
+                                        onChange={changeEventHandler}
+                                        placeholder="••••••••"
+                                        className="py-6 border-slate-200 focus-visible:ring-blue-600 bg-slate-50 pr-10"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                                    >
+                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="mt-8">
+                            {
+                                loading ? (
+                                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-6 text-base font-semibold shadow-md transition-all" disabled> 
+                                        <Loader2 className='mr-2 h-5 w-5 animate-spin' /> Signing in...
+                                    </Button>
+                                ) : (
+                                    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-6 text-base font-semibold shadow-md transition-all">
+                                        Sign In
+                                    </Button>
+                                )
+                            }
+                        </div>
+                        <div className='mt-8 text-center text-sm text-slate-600'>
+                            Don't have an account? <Link to="/signup" className='text-blue-600 hover:text-blue-800 font-bold ml-1 transition-colors'>Sign up for free</Link>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     )

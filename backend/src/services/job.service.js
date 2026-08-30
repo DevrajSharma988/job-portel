@@ -3,9 +3,10 @@ import STATUS_CODES from "../constants/statusCodes.constant.js";
 import * as jobRepository from "../repositories/job.repository.js";
 import * as companyRepository from "../repositories/company.repository.js";
 import * as applicationRepository from "../repositories/application.repository.js";
+import { User } from "../models/user.model.js";
 
 export const createJob = async (jobData, userId) => {
-  const { title, description, requirements, salary, location, employmentType, workMode, experience, position, companyId } = jobData;
+  const { title, description, requirements, salaryType, salaryMin, salaryMax, salaryPeriod, location, employmentType, workMode, jobType, experienceLevel, position, companyId } = jobData;
   
   const company = await companyRepository.findCompanyById(companyId);
   if (!company) {
@@ -19,11 +20,15 @@ export const createJob = async (jobData, userId) => {
     title,
     description,
     requirements: requirements.split(","),
-    salary: Number(salary),
+    salaryType,
+    salaryMin: Number(salaryMin) || 0,
+    salaryMax: Number(salaryMax) || 0,
+    salaryPeriod,
+    jobType,
     location,
     employmentType,
     workMode,
-    experienceLevel: experience,
+    experienceLevel,
     position,
     company: companyId,
     created_by: userId,
@@ -90,19 +95,61 @@ export const updateJob = async (jobId, jobData, userId) => {
     throw new ApiError(STATUS_CODES.CONFLICT, "This job cannot be edited because candidates have already applied.");
   }
 
-  const { title, description, requirements, salary, location, employmentType, workMode, experience, position } = jobData;
+  const { title, description, requirements, salaryType, salaryMin, salaryMax, salaryPeriod, location, employmentType, workMode, jobType, experienceLevel, position } = jobData;
 
   const updatedJob = await jobRepository.updateJobById(jobId, {
     title,
     description,
     requirements: Array.isArray(requirements) ? requirements : requirements.split(","),
-    salary: Number(salary),
+    salaryType,
+    salaryMin: Number(salaryMin) || 0,
+    salaryMax: Number(salaryMax) || 0,
+    salaryPeriod,
+    jobType,
     location,
     employmentType,
     workMode,
-    experienceLevel: experience,
+    experienceLevel,
     position
   });
 
   return updatedJob;
+};
+
+export const toggleSaveJob = async (jobId, userId) => {
+  const job = await jobRepository.findJobById(jobId);
+  if (!job) {
+    throw new ApiError(STATUS_CODES.NOT_FOUND, "Job not found.");
+  }
+  
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(STATUS_CODES.NOT_FOUND, "User not found.");
+  }
+
+  const isSaved = user.profile.savedJobs.includes(jobId);
+  
+  if (isSaved) {
+    user.profile.savedJobs.pull(jobId);
+  } else {
+    user.profile.savedJobs.push(jobId);
+  }
+  
+  await user.save();
+  return { isSaved: !isSaved, user };
+};
+
+export const getSavedJobs = async (userId) => {
+  const user = await User.findById(userId).populate({
+    path: 'profile.savedJobs',
+    populate: {
+      path: 'company'
+    }
+  });
+  
+  if (!user) {
+    throw new ApiError(STATUS_CODES.NOT_FOUND, "User not found.");
+  }
+
+  return user.profile.savedJobs;
 };

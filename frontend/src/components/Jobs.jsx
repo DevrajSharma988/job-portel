@@ -4,12 +4,15 @@ import FilterCard from './FilterCard'
 import Job from './Job';
 import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
-
-// const jobsArray = [1, 2, 3, 4, 5, 6, 7, 8];
+import { Button } from './ui/button';
 
 const Jobs = () => {
     const { allJobs, searchedQuery, filters } = useSelector(store => store.job);
     const [filterJobs, setFilterJobs] = useState(allJobs);
+    
+    // Pagination states
+    const [currentPage, setCurrentPage] = useState(1);
+    const jobsPerPage = 9;
 
     useEffect(() => {
         setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' }), 10);
@@ -44,6 +47,9 @@ const Jobs = () => {
                 const employmentMatch = !filters.employmentTypes || filters.employmentTypes.length === 0 ||
                     filters.employmentTypes.includes(job.employmentType);
 
+                const jobTypeMatch = !filters.jobTypes || filters.jobTypes.length === 0 ||
+                    filters.jobTypes.includes(job.jobType);
+
                 const workModeMatch = !filters.workModes || filters.workModes.length === 0 ||
                     filters.workModes.includes(job.workMode);
 
@@ -57,55 +63,98 @@ const Jobs = () => {
                         return true;
                     });
 
-                return locationMatch && industryMatch && employmentMatch && workModeMatch && salaryMatch;
+                return locationMatch && industryMatch && employmentMatch && jobTypeMatch && workModeMatch && salaryMatch;
             });
         }
 
         setFilterJobs(filteredJobs);
+        setCurrentPage(1);
     }, [allJobs, searchedQuery, filters]);
 
+    // Calculate pagination values
+    const indexOfLastJob = currentPage * jobsPerPage;
+    const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+    const currentJobs = filterJobs.slice(indexOfFirstJob, indexOfLastJob);
+    const totalPages = Math.ceil(filterJobs.length / jobsPerPage);
+
     return (
-        <div>
+        <div className="bg-[#EEF1F5] h-screen overflow-hidden flex flex-col">
             <Navbar />
-            <div className='max-w-7xl mx-auto mt-5'>
-                <div className='flex gap-5'>
-                    <div className='w-20%'>
+            <div className='flex flex-1 overflow-hidden'>
+                {/* Sidebar - Full height, attached to left */}
+                <aside className='hidden lg:block w-[280px] min-w-[280px] bg-[#F7F8FA] border-r border-slate-300 h-full overflow-y-auto custom-scrollbar'>
+                    <div className="p-4">
                         <FilterCard />
                     </div>
-                    {
-                        filterJobs.length <= 0 ? (
-                            <div className='flex-1 flex flex-col items-center justify-center py-20 text-center h-[88vh]'>
-                                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                </div>
-                                <h3 className="text-xl font-semibold text-gray-800">No jobs found</h3>
-                                <p className="text-gray-500 mt-2">Try adjusting your search or filters to find what you're looking for.</p>
+                </aside>
+                
+                {/* Main Content Area */}
+                <main className='flex-1 h-full overflow-y-auto custom-scrollbar p-6'>
+                    {/* Mobile filter toggle */}
+                    <div className='lg:hidden mb-4'>
+                        <FilterCard />
+                    </div>
+
+                    {filterJobs.length <= 0 ? (
+                        <div className='flex flex-col items-center justify-center py-20 text-center bg-white rounded-xl border border-slate-200 shadow-sm'>
+                            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
                             </div>
-                        ) : (
-                            <div className='flex-1 h-[88vh] overflow-y-auto pb-5'>
-                                <div className='grid grid-cols-3 gap-4'>
-                                    {
-                                        filterJobs.map((job) => (
-                                            <motion.div
-                                                initial={{ opacity: 0, x: 100 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -100 }}
-                                                transition={{ duration: 0.3 }}
-                                                key={job?._id}>
-                                                <Job job={job} />
-                                            </motion.div>
-                                        ))
-                                    }
-                                </div>
+                            <h3 className="text-xl font-semibold text-slate-800">No jobs found</h3>
+                            <p className="text-slate-500 mt-2">Try adjusting your search or filters to find what you're looking for.</p>
+                        </div>
+                    ) : (
+                        <div>
+                            <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5'>
+                                {
+                                    currentJobs.map((job) => (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.3 }}
+                                            key={job?._id}>
+                                            <Job job={job} />
+                                        </motion.div>
+                                    ))
+                                }
                             </div>
-                        )
-                    }
-                </div>
+                            
+                            {/* Pagination Controls */}
+                            {totalPages > 1 && (
+                                <div className="flex justify-center items-center mt-10 gap-3">
+                                    <Button 
+                                        variant="outline" 
+                                        disabled={currentPage === 1} 
+                                        onClick={() => {
+                                            setCurrentPage(prev => Math.max(prev - 1, 1));
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        className="border-slate-300 bg-white text-slate-700 hover:bg-slate-50 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200"
+                                    >
+                                        Previous
+                                    </Button>
+                                    <span className="flex items-center px-4 py-2 text-sm font-semibold text-slate-800 bg-white border border-slate-300 rounded-md shadow-sm">
+                                        Page {currentPage} of {totalPages}
+                                    </span>
+                                    <Button 
+                                        variant="outline" 
+                                        disabled={currentPage === totalPages} 
+                                        onClick={() => {
+                                            setCurrentPage(prev => Math.min(prev + 1, totalPages));
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        className="border-slate-300 bg-white text-slate-700 hover:bg-slate-50 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200"
+                                    >
+                                        Next
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </main>
             </div>
-
-
         </div>
     )
 }

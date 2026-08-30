@@ -2,7 +2,7 @@ export const forgotPasswordOTPTemplate = (otp) => {
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e5e5e5; border-radius: 8px;">
       <h2 style="color: #2563eb; text-align: center;">
-        Job Portal
+        CareerNest
       </h2>
 
       <p>Hello,</p>

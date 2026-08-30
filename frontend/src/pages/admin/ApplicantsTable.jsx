@@ -4,7 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../../components/ui/pop
 import { MoreHorizontal } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
-import { APPLICATION_API_END_POINT } from '@/utils/constant';
+import { APPLICATION_API_END_POINT, getDownloadUrl } from '@/utils/constant';
 import axios from 'axios';
 import { Badge } from '../../components/ui/badge';
 
@@ -28,14 +28,13 @@ const ApplicantsTable = () => {
     }
 
     return (
-        <div>
+        <div className="overflow-x-auto overflow-y-hidden border border-slate-200 rounded-xl">
             <Table>
-                <TableCaption>A list of your recent applied user</TableCaption>
-                <TableHeader>
+                <TableCaption className="text-slate-500 py-4">A list of all candidates who applied for this role.</TableCaption>
+                <TableHeader className="bg-slate-50">
                     <TableRow>
                         <TableHead>FullName</TableHead>
                         <TableHead>Email</TableHead>
-                        <TableHead>Contact</TableHead>
                         <TableHead>Resume</TableHead>
                         <TableHead>Date</TableHead>
                         <TableHead>Status</TableHead>
@@ -45,18 +44,17 @@ const ApplicantsTable = () => {
                 <TableBody>
                     {
                         applicants && applicants?.applications?.map((item) => (
-                            <tr key={item._id}>
-                                <TableCell>{item?.applicant?.fullname || "Unknown"}</TableCell>
-                                <TableCell>{item?.applicant?.email || "N/A"}</TableCell>
-                                <TableCell>{item?.applicant?.phoneNumber || "N/A"}</TableCell>
+                            <TableRow key={item._id} className="hover:bg-slate-50 transition-colors">
+                                <TableCell className="font-medium text-slate-900">{item?.applicant?.fullname || "Unknown"}</TableCell>
+                                <TableCell className="text-slate-700">{item?.applicant?.email || "N/A"}</TableCell>
                                 <TableCell >
                                     {
-                                        item?.applicant?.profile?.resume ? <a className="text-blue-600 cursor-pointer" href={item?.applicant?.profile?.resume} target="_blank" rel="noopener noreferrer">{item?.applicant?.profile?.resumeOriginalName}</a> : <span>NA</span>
+                                        item?.applicant?.profile?.resume ? <a className="text-blue-600 hover:text-blue-800 font-medium cursor-pointer transition-colors" href={getDownloadUrl(item?.applicant?.profile?.resume, item?.applicant?.profile?.resumeOriginalName)} target="_blank" rel="noopener noreferrer">{item?.applicant?.profile?.resumeOriginalName}</a> : <span className="text-slate-400">NA</span>
                                     }
                                 </TableCell>
-                                <TableCell>{item?.applicant?.createdAt?.split("T")[0] || item?.createdAt?.split("T")[0]}</TableCell>
+                                <TableCell className="text-slate-500">{item?.applicant?.createdAt?.split("T")[0] || item?.createdAt?.split("T")[0]}</TableCell>
                                 <TableCell>
-                                    <Badge className={`${item?.status === "rejected" ? 'bg-red-400' : item?.status === 'pending' ? 'bg-gray-400' : 'bg-green-400'}`}>
+                                    <Badge variant="outline" className={`${item?.status === "rejected" ? 'bg-red-50 text-red-700 border-red-200' : item?.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'} font-medium shadow-none`}>
                                         {item?.status?.toUpperCase() || 'UNKNOWN'}
                                     </Badge>
                                 </TableCell>
@@ -70,7 +68,7 @@ const ApplicantsTable = () => {
                                                 {
                                                     shortlistingStatus.map((status, index) => {
                                                         return (
-                                                            <div onClick={() => statusHandler(status === 'Accept' ? 'accepted' : 'rejected', item?._id)} key={index} className='flex w-fit items-center my-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded w-full'>
+                                                            <div onClick={() => statusHandler(status === 'Accept' ? 'accepted' : 'rejected', item?._id)} key={index} className='flex w-fit items-center my-2 cursor-pointer hover:bg-slate-100 px-2 py-1 rounded w-full'>
                                                                 <span className={status === 'Accept' ? 'text-green-600' : 'text-red-600'}>{status}</span>
                                                             </div>
                                                         )
@@ -79,11 +77,11 @@ const ApplicantsTable = () => {
                                             </PopoverContent>
                                         </Popover>
                                     ) : (
-                                        <span className="text-sm text-gray-400 font-medium whitespace-nowrap">Decision Final</span>
+                                        <span className="text-sm text-slate-400 font-medium whitespace-nowrap">Decision Final</span>
                                     )}
                                 </TableCell>
 
-                            </tr>
+                            </TableRow>
                         ))
                     }
 
