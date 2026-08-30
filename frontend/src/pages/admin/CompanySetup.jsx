@@ -96,19 +96,20 @@ const CompanySetup = () => {
     },[singleCompany]);
 
     return (
-        <div>
+        <div className="bg-[#EEF1F5] min-h-screen">
             <Navbar />
             <div className='max-w-4xl mx-auto my-10 px-4'>
-                <form onSubmit={submitHandler} className='bg-white shadow-sm border border-gray-200 rounded-xl p-8'>
-                    <div className='flex flex-col sm:flex-row sm:items-center justify-between pb-8 border-b border-gray-100 mb-8 gap-4'>
-                        <div className='flex items-center gap-5'>
-                            <Button type="button" onClick={() => navigate("/admin/dashboard")} variant="outline" className="flex items-center gap-2 font-semibold">
+                <form onSubmit={submitHandler} className='bg-white border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl p-8 relative overflow-hidden'>
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-sky-50 rounded-bl-full -mr-10 -mt-10 pointer-events-none"></div>
+                    <div className='flex flex-col sm:flex-row sm:items-center justify-between pb-8 border-b border-slate-100 mb-8 gap-4 relative z-10'>
+                        <div className="flex items-center gap-5">
+                            <Button type="button" onClick={() => navigate(-1)} variant="outline" className="flex items-center gap-2 text-slate-600 font-semibold border-slate-200 hover:bg-slate-50">
                                 <ArrowLeft className="w-4 h-4"/>
                                 <span>Back</span>
                             </Button>
                             <div>
-                                <h1 className='font-bold text-2xl text-gray-900'>Company Setup</h1>
-                                <p className='text-sm text-gray-500 mt-1'>Update your company details and logo.</p>
+                                <h1 className='font-bold text-2xl text-slate-900'>Company Setup</h1>
+                                <p className='text-sm text-slate-500 mt-1'>Update your company details and logo.</p>
                             </div>
                         </div>
                         <Button type="button" variant="destructive" className="bg-red-600 hover:bg-red-700 text-white w-full sm:w-auto" onClick={() => setOpenDeleteDialog(true)}>
@@ -116,63 +117,63 @@ const CompanySetup = () => {
                             Delete Company
                         </Button>
                     </div>
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10'>
                         <div className="col-span-1 md:col-span-2">
-                            <Label className="text-gray-700 font-semibold text-base">Company Name</Label>
+                            <Label className="text-slate-700 font-semibold text-base">Company Name</Label>
                             <Input
                                 type="text"
                                 name="name"
                                 value={input.name}
                                 disabled
-                                className="bg-gray-50 cursor-not-allowed mt-2 py-5 text-gray-500 border-gray-200"
+                                className="bg-slate-100 cursor-not-allowed mt-2 py-6 text-slate-500 border-slate-200"
                             />
                             <p className="text-xs text-amber-600 mt-2 font-medium">This field cannot be changed after registration.</p>
                         </div>
                         <div>
-                            <Label className="text-gray-700 font-semibold text-base">Description</Label>
+                            <Label className="text-slate-700 font-semibold text-base">Description</Label>
                             <Input
                                 type="text"
                                 name="description"
                                 value={input.description}
                                 onChange={changeEventHandler}
-                                className="mt-2 py-5 focus-visible:ring-blue-600"
+                                className="mt-2 py-6 bg-slate-50 border-slate-200 focus-visible:ring-blue-600"
                                 placeholder="What does your company do?"
                             />
                         </div>
                         <div>
-                            <Label className="text-gray-700 font-semibold text-base">Website</Label>
+                            <Label className="text-slate-700 font-semibold text-base">Website</Label>
                             <Input
                                 type="text"
                                 name="website"
                                 value={input.website}
                                 onChange={changeEventHandler}
-                                className="mt-2 py-5 focus-visible:ring-blue-600"
+                                className="mt-2 py-6 bg-slate-50 border-slate-200 focus-visible:ring-blue-600"
                                 placeholder="e.g. www.acmecorp.com"
                             />
                         </div>
                         <div>
-                            <Label className="text-gray-700 font-semibold text-base">Location</Label>
+                            <Label className="text-slate-700 font-semibold text-base">Headquarters</Label>
                             <Input
                                 type="text"
                                 name="location"
                                 value={input.location}
                                 onChange={changeEventHandler}
-                                className="mt-2 py-5 focus-visible:ring-blue-600"
+                                className="mt-2 py-6 bg-slate-50 border-slate-200 focus-visible:ring-blue-600"
                                 placeholder="Headquarters or remote"
                             />
                         </div>
                         <div>
-                            <Label className="text-gray-700 font-semibold text-base">Company Logo</Label>
+                            <Label className="text-slate-700 font-semibold text-base">Company Logo</Label>
                             <Input
                                 type="file"
                                 accept="image/jpeg, image/png, image/jpg"
                                 onChange={changeFileHandler}
-                                className="mt-2 py-4 file:bg-blue-50 file:text-blue-700 file:border-0 file:rounded-md hover:file:bg-blue-100 cursor-pointer"
+                                className="mt-2 py-4 bg-slate-50 border border-slate-200 file:bg-blue-50 file:text-blue-700 file:border-0 file:rounded-md hover:file:bg-blue-100 cursor-pointer"
                             />
                         </div>
                     </div>
                     
-                    <div className="mt-10 pt-6 border-t border-gray-100">
+                    <div className="mt-10 pt-6 border-t border-slate-100 relative z-10">
                         {loading ? (
                             <Button disabled className="w-full sm:w-auto bg-blue-600 text-white py-6 px-8 text-base">
                                 <Loader2 className='mr-2 h-5 w-5 animate-spin' /> 
@@ -195,9 +196,9 @@ const CompanySetup = () => {
                         </DialogTitle>
                     </DialogHeader>
                     <div className="py-4">
-                        <p className="font-semibold text-gray-900 mb-2">This action cannot be undone.</p>
-                        <p className="text-sm text-gray-600 mb-3">Deleting this company will permanently remove:</p>
-                        <ul className="list-disc ml-5 mt-2 text-sm text-gray-600 space-y-1 bg-red-50 p-3 rounded-lg border border-red-100">
+                        <p className="font-semibold text-slate-900 mb-2">This action cannot be undone.</p>
+                        <p className="text-sm text-slate-600 mb-3">Deleting this company will permanently remove:</p>
+                        <ul className="list-disc ml-5 mt-2 text-sm text-slate-600 space-y-1 bg-red-50 p-3 rounded-lg border border-red-100">
                             <li>The <strong>{input.name}</strong> Company profile</li>
                             <li>All active and closed <strong>Jobs</strong></li>
                             <li>All <strong>Applications</strong> related to those jobs</li>

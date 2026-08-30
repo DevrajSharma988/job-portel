@@ -12,10 +12,6 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    phoneNumber: {
-        type: Number,
-        required: true
-    },
     password:{
         type:String,
         required:true,
@@ -50,7 +46,8 @@ const userSchema = new mongoose.Schema({
         profilePhoto:{
             type:String,
             default:""
-        }
+        },
+        savedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }]
     },
 },{timestamps:true});
 export const User = mongoose.model('User', userSchema);

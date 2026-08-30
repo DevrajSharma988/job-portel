@@ -25,7 +25,9 @@ const AdminJobsTable = () => {
             }
             const query = searchJobByText.toLowerCase();
             const matchRole = job?.title?.toLowerCase().includes(query);
-            const matchSalary = job?.salary?.toString().includes(query);
+            const matchSalary = job?.salaryType?.toLowerCase().includes(query) || 
+                                job?.salaryMin?.toString().includes(query) || 
+                                job?.salaryMax?.toString().includes(query);
             const matchLocation = Array.isArray(job?.location) 
                 ? job.location.some(loc => loc.toLowerCase().includes(query))
                 : (job?.location && job.location.toLowerCase().includes(query));
@@ -54,10 +56,10 @@ const AdminJobsTable = () => {
 
     if (!allAdminJobs || allAdminJobs.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[300px] border border-dashed border-gray-300 rounded-lg bg-gray-50/50 mt-5">
-                <div className="text-4xl mb-4 text-gray-400"><Briefcase className="w-12 h-12" /></div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">No Jobs Posted Yet</h3>
-                <p className="text-gray-500 mb-6">You haven't posted any jobs. Create your first job posting to start hiring.</p>
+            <div className="flex flex-col items-center justify-center min-h-[300px] border border-dashed border-slate-300 rounded-lg bg-slate-50/50 mt-5">
+                <div className="text-4xl mb-4 text-slate-400"><Briefcase className="w-12 h-12" /></div>
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">No Jobs Posted Yet</h3>
+                <p className="text-slate-500 mb-6">You haven't posted any jobs. Create your first job posting to start hiring.</p>
                 <Button onClick={() => navigate("/admin/jobs/create")} className="bg-blue-600 hover:bg-blue-700">
                     Post a Job
                 </Button>
@@ -66,9 +68,9 @@ const AdminJobsTable = () => {
     }
 
     return (
-        <div className="border border-gray-200 rounded-lg shadow-sm mt-5 bg-white overflow-hidden">
+        <div className="overflow-x-auto overflow-y-hidden border border-slate-200 rounded-xl">
             <Table>
-                <TableHeader className="bg-gray-50">
+                <TableHeader className="bg-slate-50">
                     <TableRow>
                         <TableHead>Company Name</TableHead>
                         <TableHead>Role</TableHead>
@@ -81,15 +83,15 @@ const AdminJobsTable = () => {
                 <TableBody>
                     {filterJobs.length === 0 ? (
                         <TableRow>
-                            <TableCell colSpan={6} className="text-center py-10 text-gray-500">
+                            <TableCell colSpan={6} className="text-center py-10 text-slate-500">
                                 No jobs match your search.
                             </TableCell>
                         </TableRow>
                     ) : (
                         filterJobs?.map((job) => (
-                            <TableRow key={job._id} className="hover:bg-gray-50 transition-colors">
-                                <TableCell className="font-medium text-gray-900">{job?.company?.name}</TableCell>
-                                <TableCell className="text-gray-700">{job?.title}</TableCell>
+                            <TableRow key={job._id} className="hover:bg-slate-50 transition-colors">
+                                <TableCell className="font-medium text-slate-900">{job?.company?.name}</TableCell>
+                                <TableCell className="text-slate-700">{job?.title}</TableCell>
                                 <TableCell>
                                     <div className="flex flex-wrap gap-1">
                                         {Array.isArray(job?.location) ? job.location.map((loc, idx) => (
@@ -100,11 +102,11 @@ const AdminJobsTable = () => {
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    <Badge variant={job?.applications?.length > 0 ? "default" : "secondary"} className={job?.applications?.length > 0 ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}>
+                                    <Badge variant={job?.applications?.length > 0 ? "default" : "secondary"} className={job?.applications?.length > 0 ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}>
                                         {job?.applications?.length || 0}
                                     </Badge>
                                 </TableCell>
-                                <TableCell className="text-gray-500">{job?.createdAt.split("T")[0]}</TableCell>
+                                <TableCell className="text-slate-500">{job?.createdAt.split("T")[0]}</TableCell>
                                 <TableCell className="text-right">
                                     <Popover>
                                         <PopoverTrigger asChild>
@@ -115,18 +117,18 @@ const AdminJobsTable = () => {
                                         </PopoverTrigger>
                                         <PopoverContent className="w-48 p-2" align="end">
                                             {job.applications && job.applications.length > 0 ? (
-                                                <div className='flex items-center gap-2 w-full p-2 text-gray-400 cursor-not-allowed mb-1' title="This job can no longer be edited because candidates have already applied.">
+                                                <div className='flex items-center gap-2 w-full p-2 text-slate-400 cursor-not-allowed mb-1' title="This job can no longer be edited because candidates have already applied.">
                                                     <Edit2 className='w-4 h-4' />
                                                     <span>Edit (Locked)</span>
                                                 </div>
                                             ) : (
-                                                <div onClick={()=> navigate(`/admin/jobs/edit/${job._id}`)} className='flex items-center gap-2 w-full p-2 cursor-pointer hover:bg-gray-100 rounded-md transition-colors mb-1'>
-                                                    <Edit2 className='w-4 h-4 text-gray-600' />
+                                                <div onClick={()=> navigate(`/admin/jobs/edit/${job._id}`)} className='flex items-center gap-2 w-full p-2 cursor-pointer hover:bg-slate-100 rounded-md transition-colors mb-1'>
+                                                    <Edit2 className='w-4 h-4 text-slate-600' />
                                                     <span className="font-medium">Edit</span>
                                                 </div>
                                             )}
                                             
-                                            <div onClick={()=> navigate(`/admin/jobs/${job._id}/applicants`)} className='flex items-center gap-2 w-full p-2 cursor-pointer hover:bg-gray-100 rounded-md transition-colors mb-1'>
+                                            <div onClick={()=> navigate(`/admin/jobs/${job._id}/applicants`)} className='flex items-center gap-2 w-full p-2 cursor-pointer hover:bg-slate-100 rounded-md transition-colors mb-1'>
                                                 <Eye className='w-4 h-4 text-blue-600'/>
                                                 <span className="font-medium">Applicants</span>
                                             </div>
@@ -152,8 +154,8 @@ const AdminJobsTable = () => {
                         </DialogTitle>
                     </DialogHeader>
                     <div className="py-4">
-                        <p className="font-semibold text-gray-900 mb-2">This action cannot be undone.</p>
-                        <p className="text-sm text-gray-600 mb-3">Deleting this job will also remove all applications submitted for it.</p>
+                        <p className="font-semibold text-slate-900 mb-2">This action cannot be undone.</p>
+                        <p className="text-sm text-slate-600 mb-3">Deleting this job will also remove all applications submitted for it.</p>
                     </div>
                     <DialogFooter className="flex gap-2 sm:gap-0 mt-4">
                         <Button variant="outline" className="w-full sm:w-auto" onClick={() => setDeleteJobId(null)}>Cancel</Button>

@@ -22,8 +22,8 @@ const RecruiterDashboard = () => {
     const { allAdminJobs } = useSelector(store => store.job);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [openProfile, setOpenProfile] = useState(false);
-    const [openPassword, setOpenPassword] = useState(false);
+    
+    
 
     const handleImageChange = async (e) => {
         const file = e.target.files?.[0];
@@ -79,87 +79,65 @@ const RecruiterDashboard = () => {
     }
 
     return (
-        <div>
+        <div className="bg-[#EEF1F5] min-h-screen pb-12">
             <Navbar />
-            <div className='max-w-6xl mx-auto my-10 px-4'>
-                <div className='bg-white border border-gray-200 shadow-sm rounded-xl p-8 mb-8'>
-                    <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-6'>
-                        <div className='flex items-center gap-6'>
-                            <div className="relative group">
-                                <Avatar className="h-24 w-24 border-2 border-gray-100 shadow-sm">
-                                    <AvatarImage src={user?.profile?.profilePhoto} alt="profile" />
-                                    <AvatarFallback className="text-3xl font-bold bg-blue-100 text-blue-600 uppercase">{user?.fullname?.[0]}</AvatarFallback>
-                                </Avatar>
-                                <label htmlFor="photo-upload-recruiter" className="absolute bottom-0 right-0 p-1.5 bg-blue-600 rounded-full text-white cursor-pointer hover:bg-blue-700 shadow-md transition-colors">
-                                    <Camera className="w-4 h-4" />
-                                </label>
-                                <input id="photo-upload-recruiter" type="file" accept="image/jpeg, image/png, image/jpg" className="hidden" onChange={handleImageChange} />
-                            </div>
-                            <div>
-                                <h1 className='font-bold text-2xl text-gray-900'>{user?.fullname}</h1>
-                                <p className='text-gray-500 mt-1'>{user?.profile?.bio || "No bio provided"}</p>
-                                <div className='mt-4 flex flex-col md:flex-row gap-4'>
-                                    <div className='flex items-center gap-2 text-gray-600 text-sm'>
-                                        <Mail className="w-4 h-4 text-gray-400" />
-                                        <span>{user?.email}</span>
-                                    </div>
-                                    <div className='flex items-center gap-2 text-gray-600 text-sm'>
-                                        <Contact className="w-4 h-4 text-gray-400" />
-                                        <span>{user?.phoneNumber}</span>
-                                    </div>
-                                </div>
-                            </div>
+            
+            {/* Dashboard Header/Banner */}
+            <div className="bg-white border-b border-slate-200 shadow-sm relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-sky-50 to-indigo-50/50 pointer-events-none"></div>
+                <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[400px] h-[400px] bg-sky-200 rounded-full blur-[100px] opacity-30 pointer-events-none"></div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative z-10">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Recruiter Dashboard</h1>
+                            <p className="text-slate-500 mt-2 text-lg">Manage your company profile, job postings, and candidates.</p>
                         </div>
-                        <div className="flex flex-col sm:flex-row md:flex-col gap-3 w-full md:w-auto">
-                            <Button onClick={() => setOpenProfile(true)} variant="outline" className="flex gap-2 w-full justify-center">
-                                <Pen size={16}/> Update Profile
+                        {hasCompany && (
+                            <Button onClick={() => navigate("/admin/jobs/create")} className="bg-sky-600 hover:bg-sky-700 text-white shadow-md transition-all hover:shadow-lg w-full md:w-auto px-6 py-6 text-base font-semibold rounded-xl">
+                                + Post a New Job
                             </Button>
-                            <Button onClick={() => setOpenPassword(true)} variant="outline" className="flex gap-2 w-full justify-center">
-                                Change Password
-                            </Button>
-                            <Button onClick={logoutHandler} variant="ghost" className="flex gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 w-full justify-center">
-                                <LogOut size={16}/> Logout
-                            </Button>
-                        </div>
+                        )}
                     </div>
                 </div>
+            </div>
 
+            <div className='max-w-7xl mx-auto mt-8 px-4 sm:px-6 lg:px-8'>
                 {!hasCompany ? (
-                    <div className='bg-blue-50/50 border border-blue-100 rounded-xl p-12 text-center flex flex-col items-center justify-center min-h-[300px] shadow-sm'>
-                        <div className="text-6xl mb-6">🏢</div>
-                        <h2 className='text-2xl font-bold text-gray-900 mb-3'>You haven't registered your company yet.</h2>
-                        <p className='text-gray-500 mb-8 max-w-md'>Register your company to start posting jobs and finding the best candidates.</p>
-                        <Button onClick={() => navigate("/admin/companies/create")} className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 rounded-lg text-base font-semibold shadow-md transition-all hover:shadow-lg">
-                            Register Company
+                    <div className='bg-white border border-slate-200 rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[400px] shadow-sm relative overflow-hidden'>
+                        <div className="absolute inset-0 bg-gradient-to-b from-sky-50/30 to-transparent pointer-events-none"></div>
+                        <div className="w-24 h-24 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mb-6 shadow-sm border border-sky-200">
+                            <Building2 className="w-10 h-10" />
+                        </div>
+                        <h2 className='text-3xl font-bold text-slate-900 mb-4'>Company Setup Required</h2>
+                        <p className='text-slate-500 mb-8 max-w-lg text-lg leading-relaxed'>You need to register your company details before you can start posting jobs and reviewing candidates.</p>
+                        <Button onClick={() => navigate("/admin/companies/create")} className="bg-sky-600 hover:bg-sky-700 text-white px-10 py-6 rounded-xl text-lg font-bold shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5">
+                            Register Your Company
                         </Button>
                     </div>
                 ) : (
-                    <>
-                        <div className='flex items-center justify-between mb-6'>
-                            <h2 className='text-xl font-bold text-gray-900'>Dashboard Overview</h2>
-                            <Button onClick={() => navigate("/admin/jobs/create")} className="bg-blue-600 hover:bg-blue-700">
-                                Post a Job
-                            </Button>
-                        </div>
-                        
+                    <div className="space-y-8">
+                        {/* Metrics Row */}
                         <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-                            <div className='bg-white border border-gray-200 shadow-sm rounded-xl p-6 flex flex-col h-full hover:shadow-md transition-shadow'>
-                                <div className='flex items-center justify-between mb-4'>
-                                    <h3 className='font-semibold text-gray-600'>My Company</h3>
-                                    <div className="p-2 bg-blue-100 rounded-lg">
-                                        <Building2 className="w-5 h-5 text-blue-600" />
+                            <div className='bg-white border border-slate-200 shadow-sm rounded-2xl p-6 flex flex-col h-full hover:shadow-md hover:border-sky-300 transition-all duration-300 group relative overflow-hidden'>
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none"></div>
+                                <div className='flex items-start justify-between mb-6 relative z-10'>
+                                    <div>
+                                        <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">My Company</p>
+                                        <h3 className='font-bold text-slate-900 text-lg truncate w-[180px]' title={singleCompany?.name}>{singleCompany?.name}</h3>
+                                    </div>
+                                    <div className="p-3 bg-blue-100 rounded-xl shadow-sm border border-blue-200">
+                                        <Building2 className="w-6 h-6 text-blue-700" />
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-4 mb-6 flex-grow">
+                                <div className="flex-grow flex items-center justify-center mb-6 relative z-10">
                                     {singleCompany?.logo ? (
-                                        <img src={singleCompany.logo} alt="logo" className="w-12 h-12 rounded-md object-contain border bg-white" />
+                                        <img src={singleCompany.logo} alt="logo" className="w-20 h-20 rounded-xl object-contain border border-slate-200 bg-white shadow-sm" />
                                     ) : (
-                                        <div className="w-12 h-12 rounded-md bg-gray-100 flex items-center justify-center border text-2xl">🏢</div>
+                                        <div className="w-20 h-20 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-200 text-3xl shadow-sm">🏢</div>
                                     )}
-                                    <p className='text-xl font-bold text-gray-900 truncate' title={singleCompany?.name}>{singleCompany?.name}</p>
                                 </div>
                                 <Button 
-                                    className="w-full mt-auto" 
+                                    className="w-full mt-auto bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 hover:border-blue-300 font-semibold transition-all relative z-10 shadow-sm" 
                                     variant="outline" 
                                     onClick={() => navigate(`/admin/companies/${singleCompany._id}`)}
                                 >
@@ -167,19 +145,25 @@ const RecruiterDashboard = () => {
                                 </Button>
                             </div>
 
-                            <div className='bg-white border border-gray-200 shadow-sm rounded-xl p-6 flex flex-col h-full hover:shadow-md transition-shadow'>
-                                <div className='flex items-center justify-between mb-4'>
-                                    <h3 className='font-semibold text-gray-600'>Total Jobs</h3>
-                                    <div className="p-2 bg-purple-100 rounded-lg">
-                                        <Briefcase className="w-5 h-5 text-purple-600" />
+                            <div className='bg-white border border-slate-200 shadow-sm rounded-2xl p-6 flex flex-col h-full hover:shadow-md hover:border-indigo-300 transition-all duration-300 group relative overflow-hidden'>
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none"></div>
+                                <div className='flex items-start justify-between mb-2 relative z-10'>
+                                    <div>
+                                        <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Active Jobs</p>
+                                        <h3 className='font-bold text-slate-900 text-lg'>Total Postings</h3>
+                                    </div>
+                                    <div className="p-3 bg-indigo-100 rounded-xl shadow-sm border border-indigo-200">
+                                        <Briefcase className="w-6 h-6 text-indigo-700" />
                                     </div>
                                 </div>
-                                <div className="mb-6 flex-grow flex flex-col justify-center">
-                                    <p className='text-4xl font-bold text-gray-900'>{totalJobs}</p>
-                                    <p className="text-sm text-gray-500 mt-1">Active job postings</p>
+                                <div className="mb-6 flex-grow flex flex-col justify-center relative z-10">
+                                    <div className="flex items-baseline gap-2">
+                                        <p className='text-5xl font-extrabold text-slate-900 tracking-tight'>{totalJobs}</p>
+                                        <span className="text-slate-500 font-medium">Jobs</span>
+                                    </div>
                                 </div>
                                 <Button 
-                                    className="w-full mt-auto" 
+                                    className="w-full mt-auto bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 hover:border-indigo-300 font-semibold transition-all relative z-10 shadow-sm" 
                                     variant="outline"
                                     onClick={() => navigate("/admin/jobs")}
                                 >
@@ -187,19 +171,25 @@ const RecruiterDashboard = () => {
                                 </Button>
                             </div>
 
-                            <div className='bg-white border border-gray-200 shadow-sm rounded-xl p-6 flex flex-col h-full hover:shadow-md transition-shadow'>
-                                <div className='flex items-center justify-between mb-4'>
-                                    <h3 className='font-semibold text-gray-600'>Total Applications</h3>
-                                    <div className="p-2 bg-green-100 rounded-lg">
-                                        <FileText className="w-5 h-5 text-green-600" />
+                            <div className='bg-white border border-slate-200 shadow-sm rounded-2xl p-6 flex flex-col h-full hover:shadow-md hover:border-emerald-300 transition-all duration-300 group relative overflow-hidden'>
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none"></div>
+                                <div className='flex items-start justify-between mb-2 relative z-10'>
+                                    <div>
+                                        <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Candidates</p>
+                                        <h3 className='font-bold text-slate-900 text-lg'>Total Applications</h3>
+                                    </div>
+                                    <div className="p-3 bg-emerald-100 rounded-xl shadow-sm border border-emerald-200">
+                                        <FileText className="w-6 h-6 text-emerald-700" />
                                     </div>
                                 </div>
-                                <div className="mb-6 flex-grow flex flex-col justify-center">
-                                    <p className='text-4xl font-bold text-gray-900'>{totalApplications}</p>
-                                    <p className="text-sm text-gray-500 mt-1">Candidates applied</p>
+                                <div className="mb-6 flex-grow flex flex-col justify-center relative z-10">
+                                    <div className="flex items-baseline gap-2">
+                                        <p className='text-5xl font-extrabold text-slate-900 tracking-tight'>{totalApplications}</p>
+                                        <span className="text-slate-500 font-medium">Applicants</span>
+                                    </div>
                                 </div>
                                 <Button 
-                                    className="w-full mt-auto" 
+                                    className="w-full mt-auto bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 hover:border-emerald-300 font-semibold transition-all relative z-10 shadow-sm" 
                                     variant="outline"
                                     onClick={() => navigate("/admin/applications")}
                                 >
@@ -207,11 +197,9 @@ const RecruiterDashboard = () => {
                                 </Button>
                             </div>
                         </div>
-                    </>
+                    </div>
                 )}
             </div>
-            <UpdateProfileDialog open={openProfile} setOpen={setOpenProfile}/>
-            <UpdatePasswordDialog open={openPassword} setOpen={setOpenPassword}/>
         </div>
     )
 }

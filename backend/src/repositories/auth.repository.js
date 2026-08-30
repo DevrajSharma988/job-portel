@@ -65,3 +65,11 @@ export const changePassword = async (userId, hashedPassword) => {
     { new: true }
   );
 };
+
+export const deleteUnverifiedUsersOlderThan = async (hours) => {
+  const cutoffDate = new Date(Date.now() - hours * 60 * 60 * 1000);
+  return await User.deleteMany({
+    isVerified: false,
+    createdAt: { $lt: cutoffDate },
+  });
+};

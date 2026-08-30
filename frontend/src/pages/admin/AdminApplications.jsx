@@ -5,7 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../../components/ui/pop
 import { MoreHorizontal, ArrowLeft, Loader2 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
-import { APPLICATION_API_END_POINT } from '@/utils/constant';
+import { APPLICATION_API_END_POINT, getDownloadUrl } from '@/utils/constant';
 import axios from 'axios';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -75,16 +75,12 @@ const AdminApplications = () => {
     }
 
     return (
-        <div>
+        <div className="bg-[#EEF1F5] min-h-screen">
             <Navbar />
             <div className='max-w-7xl mx-auto px-4 mt-10'>
-                <Button onClick={() => navigate(-1)} variant="ghost" className="flex items-center gap-2 mb-4">
-                    <ArrowLeft className="w-5 h-5"/>
-                    Back
-                </Button>
                 <div className='mb-8'>
-                    <h1 className='text-2xl font-bold text-gray-900'>All Applications ({applications.length})</h1>
-                    <p className='text-gray-500 mt-1'>Review all candidates who have applied to your jobs.</p>
+                    <h1 className='text-2xl font-bold text-slate-900'>All Applications ({applications.length})</h1>
+                    <p className='text-slate-500 mt-1'>Review all candidates who have applied to your jobs.</p>
                 </div>
 
                 {loading ? (
@@ -92,19 +88,18 @@ const AdminApplications = () => {
                         <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
                     </div>
                 ) : applications.length === 0 ? (
-                    <div className='text-center py-20 bg-gray-50 rounded-xl border border-dashed border-gray-300'>
-                        <h2 className='text-lg font-medium text-gray-600'>No applications found</h2>
-                        <p className='text-gray-400'>You don't have any applicants yet.</p>
+                    <div className='text-center py-20 bg-slate-50 rounded-xl border border-dashed border-slate-300'>
+                        <h2 className='text-lg font-medium text-slate-600'>No applications found</h2>
+                        <p className='text-slate-400'>You don't have any applicants yet.</p>
                     </div>
                 ) : (
-                    <div className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden mb-20">
+                    <div className="bg-white border border-slate-300 shadow-sm rounded-xl overflow-x-auto mb-20">
                         <Table>
                             <TableCaption className="pb-4 pt-4 border-t">A list of all recent applicants</TableCaption>
-                            <TableHeader className="bg-gray-50">
+                            <TableHeader className="bg-slate-50">
                                 <TableRow>
                                     <TableHead>FullName</TableHead>
                                     <TableHead>Email</TableHead>
-                                    <TableHead>Contact</TableHead>
                                     <TableHead>Job Applied</TableHead>
                                     <TableHead>Resume</TableHead>
                                     <TableHead>Date</TableHead>
@@ -115,10 +110,9 @@ const AdminApplications = () => {
                             <TableBody>
                                 {
                                     applications.map((item) => (
-                                        <TableRow key={item._id} className="hover:bg-gray-50/50">
+                                        <TableRow key={item._id} className="hover:bg-slate-50/50">
                                             <TableCell className="font-medium">{item?.applicant?.fullname || "Unknown"}</TableCell>
                                             <TableCell>{item?.applicant?.email || "N/A"}</TableCell>
-                                            <TableCell>{item?.applicant?.phoneNumber || "N/A"}</TableCell>
                                             <TableCell>
                                                 <Badge variant="outline" className="text-blue-700 bg-blue-50 border-blue-200">
                                                     {item.jobTitle}
@@ -127,16 +121,16 @@ const AdminApplications = () => {
                                             <TableCell>
                                                 {
                                                     item?.applicant?.profile?.resume ? 
-                                                    <a className="text-blue-600 hover:underline hover:text-blue-800 font-medium" href={item?.applicant?.profile?.resume} target="_blank" rel="noopener noreferrer">
+                                                    <a className="text-blue-600 hover:underline hover:text-blue-800 font-medium" href={getDownloadUrl(item?.applicant?.profile?.resume, item?.applicant?.profile?.resumeOriginalName)} target="_blank" rel="noopener noreferrer">
                                                         {item?.applicant?.profile?.resumeOriginalName}
-                                                    </a> : <span className="text-gray-400 italic">NA</span>
+                                                    </a> : <span className="text-slate-400 italic">NA</span>
                                                 }
                                             </TableCell>
-                                            <TableCell className="text-gray-500 whitespace-nowrap">
+                                            <TableCell className="text-slate-500 whitespace-nowrap">
                                                 {item?.createdAt?.split("T")[0]}
                                             </TableCell>
                                             <TableCell>
-                                                <Badge className={`${item?.status === "rejected" ? 'bg-red-100 text-red-700 hover:bg-red-200' : item?.status === 'pending' ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' : 'bg-green-100 text-green-700 hover:bg-green-200'} border-none`}>
+                                                <Badge className={`${item?.status === "rejected" ? 'bg-red-100 text-red-700 hover:bg-red-200' : item?.status === 'pending' ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-green-100 text-green-700 hover:bg-green-200'} border-none`}>
                                                     {item?.status?.toUpperCase() || 'UNKNOWN'}
                                                 </Badge>
                                             </TableCell>
@@ -145,7 +139,7 @@ const AdminApplications = () => {
                                                     <Popover>
                                                         <PopoverTrigger asChild>
                                                             <Button variant="ghost" size="icon">
-                                                                <MoreHorizontal className="w-5 h-5 text-gray-500" />
+                                                                <MoreHorizontal className="w-5 h-5 text-slate-500" />
                                                             </Button>
                                                         </PopoverTrigger>
                                                         <PopoverContent className="w-32 p-2">
@@ -164,7 +158,7 @@ const AdminApplications = () => {
                                                         </PopoverContent>
                                                     </Popover>
                                                 ) : (
-                                                    <span className="text-sm text-gray-400 font-medium whitespace-nowrap">Decision Final</span>
+                                                    <span className="text-sm text-slate-400 font-medium whitespace-nowrap">Decision Final</span>
                                                 )}
                                             </TableCell>
                                         </TableRow>

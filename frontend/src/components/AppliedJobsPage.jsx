@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import Navbar from './shared/Navbar'
+import { Button } from './ui/button'
 import AppliedJobTable from './AppliedJobTable'
 import useGetAppliedJobs from '@/hooks/useGetAppliedJobs'
 import { useSelector } from 'react-redux'
@@ -35,17 +36,17 @@ const AppliedJobsPage = () => {
     }, [allAppliedJobs]);
 
     return (
-        <div className="bg-gray-50 min-h-screen pb-20">
+        <div className="bg-[#EEF1F5] min-h-screen pb-20">
             <Navbar />
-            <div className='max-w-6xl mx-auto my-10 px-4'>
+            <div className='max-w-6xl mx-auto mt-8 mb-10 px-4'>
                 <div className="mb-8">
-                    <h1 className='font-bold text-3xl text-gray-900'>My Applied Jobs</h1>
-                    <p className='text-gray-500 mt-1'>Track the status of your job applications</p>
+                    <h1 className='font-bold text-3xl text-slate-900'>My Applied Jobs</h1>
+                    <p className='text-slate-500 mt-1'>Track the status of your job applications</p>
                 </div>
                 
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm flex items-center gap-4">
+                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
                         <div className="p-3 bg-blue-100 text-blue-600 rounded-lg">
                             <Briefcase className="w-6 h-6" />
                         </div>
@@ -55,7 +56,7 @@ const AppliedJobsPage = () => {
                         </div>
                     </div>
                     
-                    <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm flex items-center gap-4">
+                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
                         <div className="p-3 bg-gray-100 text-gray-600 rounded-lg">
                             <Clock className="w-6 h-6" />
                         </div>
@@ -65,7 +66,7 @@ const AppliedJobsPage = () => {
                         </div>
                     </div>
                     
-                    <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm flex items-center gap-4">
+                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
                         <div className="p-3 bg-green-100 text-green-600 rounded-lg">
                             <CheckCircle2 className="w-6 h-6" />
                         </div>
@@ -75,7 +76,7 @@ const AppliedJobsPage = () => {
                         </div>
                     </div>
                     
-                    <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm flex items-center gap-4">
+                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
                         <div className="p-3 bg-red-100 text-red-600 rounded-lg">
                             <XCircle className="w-6 h-6" />
                         </div>
@@ -86,7 +87,7 @@ const AppliedJobsPage = () => {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     {/* Applied Job Table   */}
                     <AppliedJobTable />
                 </div>

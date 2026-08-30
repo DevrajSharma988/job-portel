@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Navbar from './shared/Navbar'
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar'
 import { Button } from './ui/button'
-import { Contact, Mail, Pen, ArrowLeft, Camera } from 'lucide-react'
+import { Mail, Pen, Camera } from 'lucide-react'
 import { Badge } from './ui/badge'
 import { Label } from './ui/label'
 import UpdateProfileDialog from './UpdateProfileDialog'
@@ -10,7 +10,7 @@ import UpdatePasswordDialog from './UpdatePasswordDialog'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { USER_API_END_POINT } from '@/utils/constant'
+import { USER_API_END_POINT, getDownloadUrl } from '@/utils/constant'
 import { setUser } from '@/redux/authSlice'
 import { toast } from 'sonner'
 // const skills = ["Html", "Css", "Javascript", "Reactjs"]
@@ -53,15 +53,9 @@ const Profile = () => {
     }, [user, navigate]);
 
     return (
-        <div className="bg-gray-50 min-h-screen pb-10">
+        <div className="bg-[#EEF1F5] min-h-screen pb-10">
             <Navbar />
-            <div className='max-w-4xl mx-auto my-5 px-4'>
-                <Button onClick={() => navigate(-1)} variant="ghost" className="flex items-center gap-2">
-                    <ArrowLeft className="w-5 h-5"/>
-                    Back
-                </Button>
-            </div>
-            <div className='max-w-4xl mx-auto bg-white border border-gray-100 shadow-sm rounded-2xl mb-10 p-8'>
+            <div className='max-w-4xl mx-auto bg-white border border-slate-200 shadow-sm rounded-xl mt-8 mb-10 p-8'>
                 <div className='flex justify-between items-start'>
                     <div className='flex items-center gap-6'>
                         <div className="relative group">
@@ -80,7 +74,7 @@ const Profile = () => {
                         </div>
                     </div>
                     <div className="flex flex-col gap-2">
-                        <Button onClick={() => setOpen(true)} className="flex items-center gap-2 bg-[#6A38C2] hover:bg-[#5b30a6] text-white">
+                        <Button onClick={() => setOpen(true)} className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700">
                             <Pen className="w-4 h-4" /> Edit Profile
                         </Button>
                         <Button onClick={() => setPasswordOpen(true)} variant="outline" className="w-full">
@@ -98,12 +92,6 @@ const Profile = () => {
                         </div>
                         <span className="font-medium">{user?.email}</span>
                     </div>
-                    <div className='flex items-center gap-3 text-gray-700'>
-                        <div className="p-2 bg-gray-100 rounded-full">
-                            <Contact className="w-5 h-5 text-gray-500" />
-                        </div>
-                        <span className="font-medium">{user?.phoneNumber || "Not provided"}</span>
-                    </div>
                 </div>
                 {
                     user?.role === 'applicant' && (
@@ -119,7 +107,7 @@ const Profile = () => {
                             <div className='grid w-full max-w-sm items-center gap-2'>
                                 <Label className="text-lg font-bold text-gray-800">Resume</Label>
                                 {
-                                    user?.profile?.resume ? <a target='blank' href={user?.profile?.resume} className='text-blue-600 hover:text-blue-800 font-medium hover:underline flex items-center gap-2'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> {user?.profile?.resumeOriginalName || 'Download Resume'}</a> : <span className="text-gray-500 italic">No resume uploaded</span>
+                                    user?.profile?.resume ? <a target='blank' href={getDownloadUrl(user?.profile?.resume, user?.profile?.resumeOriginalName)} className='text-blue-600 hover:text-blue-800 font-medium hover:underline flex items-center gap-2'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> {user?.profile?.resumeOriginalName || 'Download Resume'}</a> : <span className="text-gray-500 italic">No resume uploaded</span>
                                 }
                             </div>
                         </div>

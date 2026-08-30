@@ -17,9 +17,8 @@ const Signup = () => {
     const [input, setInput] = useState({
         fullname: "",
         email: "",
-        phoneNumber: "",
         password: "",
-        role: "",
+        role: "applicant",
         file: ""
     });
     const [showPassword, setShowPassword] = useState(false);
@@ -39,7 +38,6 @@ const Signup = () => {
         const formData = new FormData();
         formData.append("fullname", input.fullname);
         formData.append("email", input.email);
-        formData.append("phoneNumber", input.phoneNumber);
         formData.append("password", input.password);
         formData.append("role", input.role);
         if (input.file) {
@@ -74,100 +72,131 @@ const Signup = () => {
         }
     },[user, navigate])
     return (
-        <div>
+        <div className="bg-white min-h-screen flex flex-col">
             <Navbar />
-            <div className='flex items-center justify-center max-w-7xl mx-auto'>
-                <form onSubmit={submitHandler} className='w-1/2 border border-gray-200 rounded-md p-4 my-10'>
-                    <h1 className='font-bold text-xl mb-5'>Sign Up</h1>
-                    <div className='my-2'>
-                        <Label>Full Name</Label>
-                        <Input
-                            type="text"
-                            value={input.fullname}
-                            name="fullname"
-                            onChange={changeEventHandler}
-                            placeholder="patel"
-                        />
+            <div className='flex-1 flex w-full'>
+                <div className="hidden lg:flex w-1/2 bg-slate-50 items-center justify-center p-12 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 -ml-20 -mt-20 w-[600px] h-[600px] bg-sky-300 rounded-full blur-[120px] opacity-40 pointer-events-none"></div>
+                    <div className="absolute bottom-0 right-0 -mr-20 -mb-20 w-[400px] h-[400px] bg-indigo-300 rounded-full blur-[120px] opacity-30 pointer-events-none"></div>
+                    <div className="z-10 max-w-lg text-center">
+                        <h2 className="text-4xl font-extrabold text-slate-900 mb-6 tracking-tight">Join the Future of Work</h2>
+                        <p className="text-lg text-slate-600 leading-relaxed">
+                            Create an account to start applying to your dream jobs or to post opportunities and hire the best talent.
+                        </p>
                     </div>
-                    <div className='my-2'>
-                        <Label>Email</Label>
-                        <Input
-                            type="email"
-                            value={input.email}
-                            name="email"
-                            onChange={changeEventHandler}
-                            placeholder="patel@gmail.com"
-                        />
-                    </div>
-                    <div className='my-2'>
-                        <Label>Phone Number</Label>
-                        <Input
-                            type="text"
-                            value={input.phoneNumber}
-                            name="phoneNumber"
-                            onChange={changeEventHandler}
-                            placeholder="8080808080"
-                        />
-                    </div>
-                    <div className='my-2'>
-                        <Label>Password</Label>
-                        <div className="relative">
-                            <Input
-                                type={showPassword ? "text" : "password"}
-                                value={input.password}
-                                name="password"
-                                onChange={changeEventHandler}
-                                placeholder="Your password"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                            >
-                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                            </button>
+                </div>
+
+                <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8 bg-[#EEF1F5] lg:bg-white relative">
+                    <form onSubmit={submitHandler} className='w-full max-w-lg bg-white lg:bg-transparent border lg:border-none border-slate-200 rounded-2xl p-8 lg:p-0 shadow-sm lg:shadow-none relative z-10'>
+                        <div className="text-center lg:text-left mb-8">
+                            <h1 className='font-bold text-3xl text-slate-900 mb-2'>Create an Account</h1>
+                            <p className="text-slate-500">Sign up to get started with CareerNest.</p>
                         </div>
-                    </div>
-                    <div className='flex items-center justify-between'>
-                        <RadioGroup className="flex items-center gap-4 my-5">
-                            <div className="flex items-center space-x-2">
+                        
+                        <div className='space-y-5'>
+                            <div className='space-y-2'>
+                                <Label className="text-slate-700 font-semibold">Full Name</Label>
                                 <Input
-                                    type="radio"
-                                    name="role"
-                                    value="applicant"
-                                    checked={input.role === 'applicant'}
+                                    type="text"
+                                    value={input.fullname}
+                                    name="fullname"
                                     onChange={changeEventHandler}
-                                    className="cursor-pointer"
+                                    placeholder="John Doe"
+                                    className="py-5 border-slate-200 focus-visible:ring-blue-600 bg-slate-50"
                                 />
-                                <Label htmlFor="r1">Applicant</Label>
                             </div>
-                            <div className="flex items-center space-x-2">
+                            <div className='space-y-2'>
+                                <Label className="text-slate-700 font-semibold">Email</Label>
                                 <Input
-                                    type="radio"
-                                    name="role"
-                                    value="recruiter"
-                                    checked={input.role === 'recruiter'}
+                                    type="email"
+                                    value={input.email}
+                                    name="email"
                                     onChange={changeEventHandler}
-                                    className="cursor-pointer"
+                                    placeholder="name@example.com"
+                                    className="py-5 border-slate-200 focus-visible:ring-blue-600 bg-slate-50"
                                 />
-                                <Label htmlFor="r2">Recruiter</Label>
                             </div>
-                        </RadioGroup>
-                        <div className='flex items-center gap-2'>
-                            <Label>Profile</Label>
-                            <Input
-                                accept="image/*"
-                                type="file"
-                                onChange={changeFileHandler}
-                                className="cursor-pointer"
-                            />
+                            <div className='space-y-2'>
+                                <Label className="text-slate-700 font-semibold">Password</Label>
+                                <div className="relative">
+                                    <Input
+                                        type={showPassword ? "text" : "password"}
+                                        value={input.password}
+                                        name="password"
+                                        onChange={changeEventHandler}
+                                        placeholder="••••••••"
+                                        className="py-5 border-slate-200 focus-visible:ring-blue-600 bg-slate-50 pr-10"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                                    >
+                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    {
-                        loading ? <Button disabled className="w-full my-4"> <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </Button> : <Button type="submit" className="w-full my-4">Signup</Button>
-                    }
-                    <span className='text-sm'>Already have an account? <Link to="/login" className='text-blue-600'>Login</Link></span>
-                </form>
+
+                        <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 my-8'>
+                            <div className='space-y-3'>
+                                <Label className="text-slate-700 font-semibold">Account Type</Label>
+                                <RadioGroup className="flex items-center gap-4">
+                                    <div className="flex items-center space-x-2">
+                                        <Input
+                                            type="radio"
+                                            name="role"
+                                            id="applicant"
+                                            value="applicant"
+                                            checked={input.role === 'applicant'}
+                                            onChange={changeEventHandler}
+                                            className="cursor-pointer w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                        />
+                                        <Label htmlFor="applicant" className="cursor-pointer text-slate-700">Applicant</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        <Input
+                                            type="radio"
+                                            name="role"
+                                            id="recruiter"
+                                            value="recruiter"
+                                            checked={input.role === 'recruiter'}
+                                            onChange={changeEventHandler}
+                                            className="cursor-pointer w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                        />
+                                        <Label htmlFor="recruiter" className="cursor-pointer text-slate-700">Recruiter</Label>
+                                    </div>
+                                </RadioGroup>
+                            </div>
+                            <div className='space-y-3 w-full sm:w-auto'>
+                                <Label className="text-slate-700 font-semibold">Profile Photo</Label>
+                                <Input
+                                    accept="image/*"
+                                    type="file"
+                                    onChange={changeFileHandler}
+                                    className="cursor-pointer border-slate-200 text-slate-600 w-full text-sm file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 px-3 pt-2"
+                                />
+                            </div>
+                        </div>
+                        
+                        <div className="mt-4">
+                            {
+                                loading ? (
+                                    <Button disabled className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-6 text-base font-semibold shadow-md transition-all"> 
+                                        <Loader2 className='mr-2 h-5 w-5 animate-spin' /> Creating account...
+                                    </Button>
+                                ) : (
+                                    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-6 text-base font-semibold shadow-md transition-all">
+                                        Sign Up
+                                    </Button>
+                                )
+                            }
+                        </div>
+                        <div className='mt-8 text-center text-sm text-slate-600'>
+                            Already have an account? <Link to="/login" className='text-blue-600 hover:text-blue-800 font-bold ml-1 transition-colors'>Log in</Link>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     )

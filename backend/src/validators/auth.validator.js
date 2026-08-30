@@ -5,9 +5,9 @@ import validatePassword from '../utils/auth/validatePassword.util.js';
 import STATUS_CODES from '../constants/statusCodes.constant.js';
 
 export const validateRegister = (data) => {
-  const { fullname, email, phoneNumber, password, role } = data;
+  const { fullname, email, password, role } = data;
 
-  if (!fullname || !email || !phoneNumber || !password || !role) {
+  if (!fullname || !email || !password || !role) {
     throw new ApiError(STATUS_CODES.BAD_REQUEST, 'All fields are required.');
   }
 

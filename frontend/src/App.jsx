@@ -11,6 +11,7 @@ import Explore from './components/Explore'
 import Profile from './components/Profile'
 import AppliedJobsPage from './components/AppliedJobsPage'
 import JobDescription from './components/JobDescription'
+import SavedJobs from './components/SavedJobs'
 
 import CompanyCreate from './pages/admin/CompanyCreate'
 import CompanySetup from './pages/admin/CompanySetup'
@@ -21,6 +22,7 @@ import Applicants from './pages/admin/Applicants'
 import AdminApplications from './pages/admin/AdminApplications'
 import ProtectedRoute from './pages/admin/ProtectedRoute'
 import RecruiterDashboard from './pages/admin/RecruiterDashboard'
+import RecruiterProfile from './pages/admin/RecruiterProfile'
 import CompanyRequiredRoute from './pages/admin/CompanyRequiredRoute'
 
 const appRouter = createBrowserRouter([
@@ -68,12 +70,19 @@ const appRouter = createBrowserRouter([
     path: "/applied-jobs",
     element: <AppliedJobsPage />
   },
+  {
+    path: "/saved-jobs",
+    element: <SavedJobs />
+  },
   // admin ke liye yha se start hoga
   {
     path:"/admin/dashboard",
     element: <ProtectedRoute><RecruiterDashboard/></ProtectedRoute>
   },
-
+  {
+    path:"/admin/profile",
+    element: <ProtectedRoute><RecruiterProfile/></ProtectedRoute>
+  },
   {
     path:"/admin/companies/create",
     element: <ProtectedRoute><CompanyCreate/></ProtectedRoute> 
