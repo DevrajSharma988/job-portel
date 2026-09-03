@@ -11,7 +11,9 @@ export const findJobsByQuery = async (query) => {
 };
 
 export const findJobByIdWithApplications = async (jobId) => {
-  return await Job.findById(jobId).populate({ path: "applications" });
+  return await Job.findById(jobId)
+    .populate({ path: "applications" })
+    .populate({ path: "company" });
 };
 
 export const findJobsByCreator = async (adminId) => {

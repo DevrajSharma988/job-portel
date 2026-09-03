@@ -37,6 +37,10 @@ const userSchema = new mongoose.Schema({
     forgotPasswordOTPExpires: {
         type: Date
     },
+    tokenVersion: {
+        type: Number,
+        default: 0
+    },
     profile:{
         bio:{type:String},
         skills:[{type:String}],

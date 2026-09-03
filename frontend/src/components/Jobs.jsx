@@ -5,13 +5,16 @@ import Job from './Job';
 import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { Button } from './ui/button';
+import { useSearchParams } from 'react-router-dom';
 
 const Jobs = () => {
     const { allJobs, searchedQuery, filters } = useSelector(store => store.job);
     const [filterJobs, setFilterJobs] = useState(allJobs);
     
     // Pagination states
-    const [currentPage, setCurrentPage] = useState(1);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const pageParam = parseInt(searchParams.get('page')) || 1;
+    const [currentPage, setCurrentPage] = useState(pageParam);
     const jobsPerPage = 9;
 
     useEffect(() => {
@@ -68,7 +71,12 @@ const Jobs = () => {
         }
 
         setFilterJobs(filteredJobs);
-        setCurrentPage(1);
+        // Only reset to page 1 if the dependencies (allJobs, searchedQuery, filters) changed
+        // and we aren't initializing from a URL parameter
+        if (currentPage !== pageParam || pageParam === 1) {
+            setCurrentPage(1);
+            setSearchParams({ page: '1' }, { replace: true });
+        }
     }, [allJobs, searchedQuery, filters]);
 
     // Calculate pagination values
@@ -128,7 +136,9 @@ const Jobs = () => {
                                         variant="outline" 
                                         disabled={currentPage === 1} 
                                         onClick={() => {
-                                            setCurrentPage(prev => Math.max(prev - 1, 1));
+                                            const newPage = Math.max(currentPage - 1, 1);
+                                            setCurrentPage(newPage);
+                                            setSearchParams({ page: newPage.toString() });
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
                                         className="border-slate-300 bg-white text-slate-700 hover:bg-slate-50 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200"
@@ -142,7 +152,9 @@ const Jobs = () => {
                                         variant="outline" 
                                         disabled={currentPage === totalPages} 
                                         onClick={() => {
-                                            setCurrentPage(prev => Math.min(prev + 1, totalPages));
+                                            const newPage = Math.min(currentPage + 1, totalPages);
+                                            setCurrentPage(newPage);
+                                            setSearchParams({ page: newPage.toString() });
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
                                         className="border-slate-300 bg-white text-slate-700 hover:bg-slate-50 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200"

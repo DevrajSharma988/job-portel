@@ -4,7 +4,7 @@ import { Button } from './ui/button'
 import AppliedJobTable from './AppliedJobTable'
 import useGetAppliedJobs from '@/hooks/useGetAppliedJobs'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Briefcase, Clock, CheckCircle2, XCircle } from 'lucide-react'
 
 const AppliedJobsPage = () => {
@@ -12,6 +12,17 @@ const AppliedJobsPage = () => {
     const { user } = useSelector(store => store.auth);
     const { allAppliedJobs } = useSelector(store => store.job);
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const currentFilter = searchParams.get('status') || 'all';
+
+    const handleFilterChange = (status) => {
+        if (currentFilter === status) {
+            setSearchParams({});
+        } else {
+            setSearchParams({ status });
+        }
+    };
+
 
     React.useEffect(() => {
         if (user?.role === 'recruiter') {
@@ -46,7 +57,10 @@ const AppliedJobsPage = () => {
                 
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div 
+                        onClick={() => handleFilterChange('all')}
+                        className={`bg-white rounded-xl p-6 border shadow-sm flex items-center gap-4 cursor-pointer transition-all ${currentFilter === 'all' ? 'border-blue-500 ring-1 ring-blue-500' : 'border-slate-200 hover:border-blue-300'}`}
+                    >
                         <div className="p-3 bg-blue-100 text-blue-600 rounded-lg">
                             <Briefcase className="w-6 h-6" />
                         </div>
@@ -56,7 +70,10 @@ const AppliedJobsPage = () => {
                         </div>
                     </div>
                     
-                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div 
+                        onClick={() => handleFilterChange('pending')}
+                        className={`bg-white rounded-xl p-6 border shadow-sm flex items-center gap-4 cursor-pointer transition-all ${currentFilter === 'pending' ? 'border-gray-500 ring-1 ring-gray-500' : 'border-slate-200 hover:border-gray-300'}`}
+                    >
                         <div className="p-3 bg-gray-100 text-gray-600 rounded-lg">
                             <Clock className="w-6 h-6" />
                         </div>
@@ -66,7 +83,10 @@ const AppliedJobsPage = () => {
                         </div>
                     </div>
                     
-                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div 
+                        onClick={() => handleFilterChange('accepted')}
+                        className={`bg-white rounded-xl p-6 border shadow-sm flex items-center gap-4 cursor-pointer transition-all ${currentFilter === 'accepted' ? 'border-green-500 ring-1 ring-green-500' : 'border-slate-200 hover:border-green-300'}`}
+                    >
                         <div className="p-3 bg-green-100 text-green-600 rounded-lg">
                             <CheckCircle2 className="w-6 h-6" />
                         </div>
@@ -76,7 +96,10 @@ const AppliedJobsPage = () => {
                         </div>
                     </div>
                     
-                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div 
+                        onClick={() => handleFilterChange('rejected')}
+                        className={`bg-white rounded-xl p-6 border shadow-sm flex items-center gap-4 cursor-pointer transition-all ${currentFilter === 'rejected' ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-200 hover:border-red-300'}`}
+                    >
                         <div className="p-3 bg-red-100 text-red-600 rounded-lg">
                             <XCircle className="w-6 h-6" />
                         </div>
@@ -89,7 +112,7 @@ const AppliedJobsPage = () => {
 
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     {/* Applied Job Table   */}
-                    <AppliedJobTable />
+                    <AppliedJobTable filterStatus={currentFilter} />
                 </div>
             </div>
         </div>

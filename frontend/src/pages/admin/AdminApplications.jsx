@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/shared/Navbar';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
 import { Popover, PopoverContent, PopoverTrigger } from '../../components/ui/popover';
-import { MoreHorizontal, ArrowLeft, Loader2 } from 'lucide-react';
+import { MoreHorizontal, ArrowLeft, Loader2, Eye, Briefcase } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import { APPLICATION_API_END_POINT, getDownloadUrl } from '@/utils/constant';
@@ -10,6 +10,8 @@ import axios from 'axios';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 
 const shortlistingStatus = ["Accept", "Reject"];
 
@@ -17,6 +19,8 @@ const AdminApplications = () => {
     const { allAdminJobs } = useSelector(store => store.job);
     const [applications, setApplications] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [filterStatus, setFilterStatus] = useState("all");
+    const [selectedApplicant, setSelectedApplicant] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -34,7 +38,9 @@ const AdminApplications = () => {
                         res.data.job.applications.forEach(app => {
                             allApps.push({
                                 ...app, 
-                                jobTitle: res.data.job.title
+                                jobTitle: res.data.job.title,
+                                companyName: res.data.job.company?.name || "Company",
+                                jobId: res.data.job._id
                             });
                         });
                     }
@@ -74,13 +80,33 @@ const AdminApplications = () => {
         }
     }
 
+    const filteredApplications = applications.filter(app => {
+        if (filterStatus === "all") return true;
+        return app?.status?.toLowerCase() === filterStatus.toLowerCase();
+    });
+
     return (
         <div className="bg-[#EEF1F5] min-h-screen">
             <Navbar />
             <div className='max-w-7xl mx-auto px-4 mt-10'>
-                <div className='mb-8'>
-                    <h1 className='text-2xl font-bold text-slate-900'>All Applications ({applications.length})</h1>
-                    <p className='text-slate-500 mt-1'>Review all candidates who have applied to your jobs.</p>
+                <div className='flex justify-between items-center mb-8'>
+                    <div>
+                        <h1 className='text-2xl font-bold text-slate-900'>All Applications ({applications.length})</h1>
+                        <p className='text-slate-500 mt-1'>Review all candidates who have applied to your jobs.</p>
+                    </div>
+                    {!loading && applications.length > 0 && (
+                        <Select value={filterStatus} onValueChange={(value) => setFilterStatus(value)}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Filter by Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Applicants</SelectItem>
+                                <SelectItem value="pending">Pending</SelectItem>
+                                <SelectItem value="accepted">Accepted</SelectItem>
+                                <SelectItem value="rejected">Rejected</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    )}
                 </div>
 
                 {loading ? (
@@ -108,8 +134,14 @@ const AdminApplications = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {
-                                    applications.map((item) => (
+                                {filteredApplications.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={7} className="text-center py-8 text-slate-500">
+                                            No applicants found for the selected filter.
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    filteredApplications.map((item) => (
                                         <TableRow key={item._id} className="hover:bg-slate-50/50">
                                             <TableCell className="font-medium">{item?.applicant?.fullname || "Unknown"}</TableCell>
                                             <TableCell>{item?.applicant?.email || "N/A"}</TableCell>
@@ -130,45 +162,87 @@ const AdminApplications = () => {
                                                 {item?.createdAt?.split("T")[0]}
                                             </TableCell>
                                             <TableCell>
-                                                <Badge className={`${item?.status === "rejected" ? 'bg-red-100 text-red-700 hover:bg-red-200' : item?.status === 'pending' ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-green-100 text-green-700 hover:bg-green-200'} border-none`}>
+                                                <Badge className={`${item?.status === "rejected" ? 'bg-red-100 text-red-700 hover:bg-red-200' : item?.status === 'pending' ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200'} border-none`}>
                                                     {item?.status?.toUpperCase() || 'UNKNOWN'}
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                {item?.status?.toLowerCase() === 'pending' ? (
-                                                    <Popover>
-                                                        <PopoverTrigger asChild>
-                                                            <Button variant="ghost" size="icon">
-                                                                <MoreHorizontal className="w-5 h-5 text-slate-500" />
-                                                            </Button>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent className="w-32 p-2">
-                                                            <div className="flex flex-col gap-1">
-                                                                {shortlistingStatus.map((status, index) => (
-                                                                    <Button 
-                                                                        key={index} 
-                                                                        variant="ghost" 
-                                                                        className={`justify-start w-full ${status === 'Accept' ? 'hover:text-green-600 hover:bg-green-50' : 'hover:text-red-600 hover:bg-red-50'}`}
-                                                                        onClick={() => statusHandler(status === 'Accept' ? 'accepted' : 'rejected', item?._id)}
-                                                                    >
-                                                                        {status}
-                                                                    </Button>
-                                                                ))}
-                                                            </div>
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                ) : (
-                                                    <span className="text-sm text-slate-400 font-medium whitespace-nowrap">Decision Final</span>
-                                                )}
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <Button variant="ghost" size="icon">
+                                                            <MoreHorizontal className="w-5 h-5 text-slate-500" />
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-40 p-2">
+                                                <div onClick={() => setSelectedApplicant(item)} className='flex items-center gap-2 my-1 cursor-pointer px-3 py-1.5 rounded-md font-medium transition-colors w-full text-blue-600 hover:bg-blue-50'>
+                                                    <Eye className="w-4 h-4"/>
+                                                    <span>View Applicant Profile</span>
+                                                </div>
+                                                <div onClick={() => navigate(`/description/${item.jobId}`)} className='flex items-center gap-2 my-1 cursor-pointer px-3 py-1.5 rounded-md font-medium transition-colors w-full text-purple-600 hover:bg-purple-50'>
+                                                    <Briefcase className="w-4 h-4"/>
+                                                    <span>Job Details</span>
+                                                </div>
+                                                {item?.status?.toLowerCase() === 'pending' && shortlistingStatus.map((status, index) => (
+                                                    <div 
+                                                        key={index}
+                                                        onClick={() => statusHandler(status === 'Accept' ? 'accepted' : 'rejected', item?._id)} 
+                                                        className={`flex items-center my-1 cursor-pointer px-3 py-1.5 rounded-md font-medium transition-colors w-full ${status === 'Accept' ? 'text-green-600 hover:bg-green-50' : 'text-red-600 hover:bg-red-50'}`}
+                                                    >
+                                                        <span>{status}</span>
+                                                    </div>
+                                                ))}
+                                                    </PopoverContent>
+                                                </Popover>
                                             </TableCell>
                                         </TableRow>
                                     ))
-                                }
+                                )}
                             </TableBody>
                         </Table>
                     </div>
                 )}
             </div>
+
+            {/* Applicant Profile Dialog */}
+            <Dialog open={!!selectedApplicant} onOpenChange={(open) => !open && setSelectedApplicant(null)}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="text-xl">Applicant Profile</DialogTitle>
+                    </DialogHeader>
+                    {selectedApplicant && (
+                        <div className="py-4 space-y-4">
+                            <div>
+                                <h3 className="font-semibold text-lg text-slate-900">{selectedApplicant.applicant.fullname}</h3>
+                                <p className="text-sm text-slate-500">{selectedApplicant.applicant.email}</p>
+                            </div>
+                            
+                            {selectedApplicant.applicant.profile?.bio && (
+                                <div>
+                                    <h4 className="text-sm font-semibold text-slate-700 mb-1">Bio</h4>
+                                    <p className="text-sm text-slate-600">{selectedApplicant.applicant.profile.bio}</p>
+                                </div>
+                            )}
+
+                            {selectedApplicant.applicant.profile?.skills && selectedApplicant.applicant.profile.skills.length > 0 && (
+                                <div>
+                                    <h4 className="text-sm font-semibold text-slate-700 mb-2">Skills</h4>
+                                    <div className="flex flex-wrap gap-2">
+                                        {selectedApplicant.applicant.profile.skills.map((skill, index) => (
+                                            <Badge key={index} variant="secondary">{skill}</Badge>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="pt-4 border-t border-slate-100">
+                                <h4 className="text-sm font-semibold text-slate-700 mb-2">Applied For Job:</h4>
+                                <p className="text-sm font-medium text-slate-900">{selectedApplicant.jobTitle}</p>
+                                <p className="text-xs text-slate-500">{selectedApplicant.companyName}</p>
+                            </div>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

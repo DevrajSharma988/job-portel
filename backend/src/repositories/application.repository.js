@@ -33,7 +33,12 @@ export const findJobWithApplicants = async (jobId) => {
 };
 
 export const findApplicationById = async (applicationId) => {
-  return await Application.findOne({ _id: applicationId });
+  return await Application.findOne({ _id: applicationId })
+    .populate('applicant')
+    .populate({
+        path: 'job',
+        populate: { path: 'company' }
+    });
 };
 
 export const findJobById = async (jobId) => {

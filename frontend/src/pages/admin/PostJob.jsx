@@ -49,8 +49,8 @@ const PostJob = () => {
         setLocations(locations.filter(l => l !== loc));
     };
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
+    const submitHandler = async (e, isPrivate = false) => {
+        if (e) e.preventDefault();
         
         if(!input.title?.trim()) return toast.error("Job Title is required");
         if(!input.description?.trim()) return toast.error("Description is required");
@@ -76,7 +76,8 @@ const PostJob = () => {
             const payload = { 
                 ...input, 
                 location: locations,
-                companyId: companies[0]._id 
+                companyId: companies[0]._id,
+                isPrivate
             };
             const res = await axios.post(`${JOB_API_END_POINT}/post`, payload, {
                 headers:{
@@ -365,11 +366,11 @@ const PostJob = () => {
                             {loading ? (
                                 <Button disabled className="w-full sm:w-auto bg-blue-600 text-white py-6 px-8 text-base">
                                     <Loader2 className='mr-2 h-5 w-5 animate-spin' /> 
-                                    Posting...
+                                    Processing...
                                 </Button>
                             ) : (
                                 <Button type="submit" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white py-6 px-8 text-base">
-                                    Post Job
+                                    Publish Job
                                 </Button>
                             )}
                             {companies.length === 0 && (

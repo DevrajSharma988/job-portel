@@ -277,6 +277,11 @@ export const refreshAccessToken = async (refreshToken) => {
 
 export const logout = async (userId) => {
   await removeRefreshSession(userId);
+  const user = await authRepository.findUserById(userId);
+  if (user) {
+    user.tokenVersion = (user.tokenVersion || 0) + 1;
+    await user.save();
+  }
 };
 
 export const getCurrentUser = async (userId) => {

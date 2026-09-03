@@ -4,9 +4,15 @@ import { Badge } from './ui/badge'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-const AppliedJobTable = () => {
+const AppliedJobTable = ({ filterStatus = 'all' }) => {
     const navigate = useNavigate();
     const {allAppliedJobs} = useSelector(store=>store.job);
+
+    const filteredJobs = allAppliedJobs.filter(job => {
+        if (filterStatus === 'all') return true;
+        return job.status === filterStatus;
+    });
+
     return (
         <div>
             <Table>
@@ -21,11 +27,11 @@ const AppliedJobTable = () => {
                 </TableHeader>
                 <TableBody>
                     {
-                        allAppliedJobs.length <= 0 ? (
+                        filteredJobs.length <= 0 ? (
                             <TableRow>
                                 <TableCell colSpan={4} className="text-center text-slate-500 py-10">You haven't applied any job yet.</TableCell>
                             </TableRow>
-                        ) : allAppliedJobs.map((appliedJob) => (
+                        ) : filteredJobs.map((appliedJob) => (
                             <TableRow 
                                 key={appliedJob._id} 
                                 onClick={() => navigate(`/description/${appliedJob.job?._id}`)}

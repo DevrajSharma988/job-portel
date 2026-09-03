@@ -81,8 +81,8 @@ const EditJob = () => {
         setLocations(locations.filter(l => l !== loc));
     };
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
+    const submitHandler = async (e, isPrivate = false) => {
+        if (e) e.preventDefault();
         
         if(!input.title?.trim()) return toast.error("Something is missing: Job Title");
         if(!input.description?.trim()) return toast.error("Something is missing: Description");
@@ -107,7 +107,8 @@ const EditJob = () => {
             const payload = { 
                 ...input, 
                 location: locations,
-                companyId: input.companyId
+                companyId: input.companyId,
+                isPrivate
             };
             const res = await axios.put(`${JOB_API_END_POINT}/update/${id}`, payload, {
                 headers:{
@@ -137,7 +138,7 @@ const EditJob = () => {
         <div className="bg-[#EEF1F5] min-h-screen">
             <Navbar />
             <div className='max-w-4xl mx-auto my-10 px-4'>
-                <form onSubmit={submitHandler} className='bg-white border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl p-6 sm:p-8 relative overflow-hidden'>
+                <form className='bg-white border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl p-6 sm:p-8 relative overflow-hidden'>
                     <div className="absolute top-0 right-0 w-40 h-40 bg-sky-50 rounded-bl-full -mr-10 -mt-10 pointer-events-none"></div>
                     <div className='flex items-center gap-5 mb-8 pb-8 border-b border-slate-100 relative z-10'>
                         <Button type="button" onClick={() => navigate(-1)} variant="outline" className="flex items-center gap-2 text-slate-600 font-semibold border-slate-200 hover:bg-slate-50">
@@ -395,17 +396,22 @@ const EditJob = () => {
 
                     </div> 
                     
-                    <div className="mt-10 pt-6 border-t border-slate-100 flex items-center gap-4 relative z-10">
+                    <div className="mt-10 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center gap-4 relative z-10">
                         {
                             loading ? (
                                 <Button disabled className="w-full sm:w-auto bg-blue-600 text-white py-6 px-8 text-base"> 
                                     <Loader2 className='mr-2 h-5 w-5 animate-spin' /> 
-                                    Updating... 
+                                    Processing... 
                                 </Button>
                             ) : (
-                                <Button type="submit" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white py-6 px-8 text-base">
-                                    Update Job
-                                </Button>
+                                <>
+                                    <Button type="button" onClick={(e) => submitHandler(e, true)} variant="outline" className="w-full sm:w-auto py-6 px-8 text-base border-slate-300 text-slate-700 hover:bg-slate-50 hover:text-slate-900">
+                                        Save as Draft (Private)
+                                    </Button>
+                                    <Button type="button" onClick={(e) => submitHandler(e, false)} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white py-6 px-8 text-base">
+                                        Publish Job
+                                    </Button>
+                                </>
                             )
                         }
                     </div>
