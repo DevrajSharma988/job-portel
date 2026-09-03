@@ -43,6 +43,13 @@ const SavedJobs = () => {
         fetchSavedJobs();
     }, []);
 
+    // Sync local state when a job is unsaved
+    useEffect(() => {
+        if (user?.profile?.savedJobs) {
+            setSavedJobs(prev => prev.filter(job => user.profile.savedJobs.includes(job._id)));
+        }
+    }, [user?.profile?.savedJobs]);
+
     const filteredSavedJobs = useMemo(() => {
         if (!searchQuery.trim()) return savedJobs;
         const query = searchQuery.toLowerCase();

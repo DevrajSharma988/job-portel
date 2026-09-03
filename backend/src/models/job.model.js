@@ -76,6 +76,10 @@ const jobSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Application',
         }
-    ]
+    ],
+    isPrivate: {
+        type: Boolean,
+        default: true
+    }
 },{timestamps:true});
 export const Job = mongoose.model("Job", jobSchema);

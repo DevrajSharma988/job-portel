@@ -11,7 +11,7 @@ const Toaster = ({
       theme={theme}
       className="toaster group"
       position="top-right"
-      duration={1200}
+      duration={1000}
       toastOptions={{
         classNames: {
           toast:

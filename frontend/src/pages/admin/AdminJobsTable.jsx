@@ -75,6 +75,7 @@ const AdminJobsTable = () => {
                         <TableHead>Company Name</TableHead>
                         <TableHead>Role</TableHead>
                         <TableHead>Locations</TableHead>
+                        <TableHead>Status</TableHead>
                         <TableHead>Applicants</TableHead>
                         <TableHead>Date</TableHead>
                         <TableHead className="text-right">Action</TableHead>
@@ -100,6 +101,11 @@ const AdminJobsTable = () => {
                                             <Badge variant="secondary" className="bg-blue-50 text-blue-700 font-normal hover:bg-blue-100">{job?.location || "India"}</Badge>
                                         )}
                                     </div>
+                                </TableCell>
+                                <TableCell>
+                                    <Badge variant="outline" className={job?.isPrivate ? "border-amber-200 text-amber-700 bg-amber-50" : "border-emerald-200 text-emerald-700 bg-emerald-50"}>
+                                        {job?.isPrivate ? "Draft" : "Published"}
+                                    </Badge>
                                 </TableCell>
                                 <TableCell>
                                     <Badge variant={job?.applications?.length > 0 ? "default" : "secondary"} className={job?.applications?.length > 0 ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}>
@@ -131,6 +137,10 @@ const AdminJobsTable = () => {
                                             <div onClick={()=> navigate(`/admin/jobs/${job._id}/applicants`)} className='flex items-center gap-2 w-full p-2 cursor-pointer hover:bg-slate-100 rounded-md transition-colors mb-1'>
                                                 <Eye className='w-4 h-4 text-blue-600'/>
                                                 <span className="font-medium">Applicants</span>
+                                            </div>
+                                            <div onClick={()=> navigate(`/description/${job._id}`)} className='flex items-center gap-2 w-full p-2 cursor-pointer hover:bg-slate-100 rounded-md transition-colors mb-1'>
+                                                <Briefcase className='w-4 h-4 text-purple-600'/>
+                                                <span className="font-medium">Job Details</span>
                                             </div>
 
                                             <div onClick={() => setDeleteJobId(job._id)} className='flex items-center gap-2 w-full p-2 cursor-pointer hover:bg-red-50 text-red-600 rounded-md transition-colors'>

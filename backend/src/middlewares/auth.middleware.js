@@ -22,6 +22,10 @@ export const authMiddleware = async (req, res, next) => {
       return next(new ApiError(STATUS_CODES.UNAUTHORIZED, 'User not found.'));
     }
 
+    if ((user.tokenVersion || 0) !== (payload.tokenVersion || 0)) {
+      return next(new ApiError(STATUS_CODES.UNAUTHORIZED, 'Session expired. Please log in again.'));
+    }
+
     req.user = user;
     req.id = user._id;
 

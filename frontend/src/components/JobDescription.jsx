@@ -76,7 +76,7 @@ const JobDescription = () => {
                             <div>
                                 <h1 className='font-extrabold text-3xl text-slate-900'>{singleJob?.title}</h1>
                                 <div className='flex flex-wrap items-center gap-4 mt-3 text-slate-600 font-medium'>
-                                    <div className="flex items-center gap-1.5"><Building2 className="w-4 h-4"/> {singleJob?.company?.name || 'Company Name'}</div>
+                                    <div className="flex items-center gap-1.5"><Building2 className="w-4 h-4"/> {singleJob?.company?.name}</div>
                                     <div className="flex items-center gap-1.5"><MapPin className="w-4 h-4"/> {Array.isArray(singleJob?.location) ? singleJob.location.join(", ") : (singleJob?.location || "India")}</div>
                                 </div>
                                 <div className='flex flex-wrap items-center gap-2 mt-5'>
@@ -107,15 +107,17 @@ const JobDescription = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="w-full md:w-auto shrink-0">
-                            <Button
-                                onClick={isApplied ? null : applyJobHandler}
-                                disabled={isApplied}
-                                size="lg"
-                                className={`w-full md:w-auto rounded-xl py-6 px-8 text-base font-semibold shadow-md transition-all ${isApplied ? 'bg-slate-300 text-slate-600 hover:bg-slate-300 cursor-not-allowed' : 'bg-slate-900 hover:bg-slate-800 hover:-translate-y-1 text-white'}`}>
-                                {isApplied ? 'Already Applied' : 'Apply Now'}
-                            </Button>
-                        </div>
+                        {user?.role !== 'recruiter' && (
+                            <div className="w-full md:w-auto shrink-0">
+                                <Button
+                                    onClick={isApplied ? null : applyJobHandler}
+                                    disabled={isApplied}
+                                    size="lg"
+                                    className={`w-full md:w-auto rounded-xl py-6 px-8 text-base font-semibold shadow-md transition-all ${isApplied ? 'bg-slate-300 text-slate-600 hover:bg-slate-300 cursor-not-allowed' : 'bg-slate-900 hover:bg-slate-800 hover:-translate-y-1 text-white'}`}>
+                                    {isApplied ? 'Already Applied' : 'Apply Now'}
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </div>
 

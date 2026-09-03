@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Label } from './ui/label'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setFilters } from '@/redux/jobSlice'
 import { X, Plus } from 'lucide-react'
 
@@ -32,7 +32,9 @@ const filterData = [
 const FilterCard = () => {
     const dispatch = useDispatch();
     
-    const [selectedFilters, setSelectedFilters] = useState({
+    const reduxFilters = useSelector(store => store.job.filters);
+
+    const [selectedFilters, setSelectedFilters] = useState(reduxFilters || {
         locations: [],
         industries: [],
         employmentTypes: [],

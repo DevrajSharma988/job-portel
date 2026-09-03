@@ -6,7 +6,7 @@ import * as applicationRepository from "../repositories/application.repository.j
 import { User } from "../models/user.model.js";
 
 export const createJob = async (jobData, userId) => {
-  const { title, description, requirements, salaryType, salaryMin, salaryMax, salaryPeriod, location, employmentType, workMode, jobType, experienceLevel, position, companyId } = jobData;
+  const { title, description, requirements, salaryType, salaryMin, salaryMax, salaryPeriod, location, employmentType, workMode, jobType, experienceLevel, position, companyId, isPrivate = true } = jobData;
   
   const company = await companyRepository.findCompanyById(companyId);
   if (!company) {
@@ -32,6 +32,7 @@ export const createJob = async (jobData, userId) => {
     position,
     company: companyId,
     created_by: userId,
+    isPrivate,
   });
 
   return job;
@@ -40,12 +41,13 @@ export const createJob = async (jobData, userId) => {
 export const getAllJobs = async (keyword) => {
   const query = keyword
     ? {
+        isPrivate: false,
         $or: [
           { title: { $regex: keyword, $options: "i" } },
           { description: { $regex: keyword, $options: "i" } },
         ],
       }
-    : {};
+    : { isPrivate: false };
 
   const jobs = await jobRepository.findJobsByQuery(query);
   return jobs || [];
@@ -95,7 +97,7 @@ export const updateJob = async (jobId, jobData, userId) => {
     throw new ApiError(STATUS_CODES.CONFLICT, "This job cannot be edited because candidates have already applied.");
   }
 
-  const { title, description, requirements, salaryType, salaryMin, salaryMax, salaryPeriod, location, employmentType, workMode, jobType, experienceLevel, position } = jobData;
+  const { title, description, requirements, salaryType, salaryMin, salaryMax, salaryPeriod, location, employmentType, workMode, jobType, experienceLevel, position, isPrivate } = jobData;
 
   const updatedJob = await jobRepository.updateJobById(jobId, {
     title,
@@ -110,7 +112,8 @@ export const updateJob = async (jobId, jobData, userId) => {
     employmentType,
     workMode,
     experienceLevel,
-    position
+    position,
+    ...(isPrivate !== undefined && { isPrivate })
   });
 
   return updatedJob;
